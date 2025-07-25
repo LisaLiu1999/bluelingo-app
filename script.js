@@ -415,8 +415,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdownOptions = document.getElementById('dropdownOptions');
     const customDropdown = document.querySelector('.custom-dropdown');
     const historyPanel = document.getElementById('history-panel'); // Get history panel reference
+    const historyToggleButton = document.getElementById('historyToggleButton'); // Get history toggle button reference
     const languageCheckboxes = document.querySelectorAll('.language-checkbox-dropdown');
     const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+    const historyCloseButton = document.createElement('button'); // Create the close button
+    historyCloseButton.className = 'history-close-button';
+    historyCloseButton.innerHTML = '<i class="fas fa-times"></i>';
+    historyCloseButton.onclick = function(event) {
+        event.stopPropagation(); // Prevent click from propagating to document
+        toggleHistoryPanel(); // Close the panel
+    };
+    if (historyPanel && historyPanel.querySelector('.history-panel-inner')) {
+        historyPanel.querySelector('.history-panel-inner').appendChild(historyCloseButton);
+    }
 
 
     // Add event listener to close dropdowns and history panel when clicking outside
@@ -429,10 +440,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Close history panel if clicked outside
         // Ensure click is not on the history panel itself or the history toggle button
-        const historyToggleButton = document.getElementById('historyToggleButton');
         if (historyPanel && historyPanel.classList.contains('show') && 
             !historyPanel.contains(event.target) && 
-            !historyToggleButton.contains(event.target)) {
+            !historyToggleButton.contains(event.target) &&
+            !historyCloseButton.contains(event.target)) { // Also check if click is not on the new close button
             
             historyPanel.classList.remove('show');
         }
@@ -580,11 +591,9 @@ async function translateToSingleLanguage(text, fromLanguage, toLanguage, resultD
     // Prepare request body
     const requestBody = {
       text: text,
+      from: fromLanguage, // Always send 'from' language now
       to: toLanguage
     };
-
-    // No longer adding 'from' if not auto-detect, as 'auto' is removed
-    requestBody.from = fromLanguage; // Always send 'from' language now
 
     const res = await fetch(API_URL, {
       method: "POST",
@@ -637,11 +646,9 @@ async function translateToMultipleLanguages(text, fromLanguage, selectedLanguage
     // Prepare request body
     const requestBody = {
       text: text,
+      from: fromLanguage, // Always send 'from' language now
       to: selectedLanguages
     };
-
-    // No longer adding 'from' if not auto-detect, as 'auto' is removed
-    requestBody.from = fromLanguage; // Always send 'from' language now
 
     const res = await fetch(API_URL, {
       method: "POST",

@@ -5,7 +5,7 @@
     --widget-bg: #f0f8ff;
     --text-color: #1b192d;
     --primary-accent: #2267d0;
-    --logospan-text:#8eb2e8; /* This variable is not used in the provided CSS, ensure it's used if intended */
+    --logospan-text:#8eb2e8;
     --secondary-accent: #dbe9ff;
     --border-color: #d1e3f8;
     --header-text: #1f519c;
@@ -17,10 +17,10 @@ body.dark-mode {
     --secondary-bg: #1a2333;
     --widget-bg: #1a2333;
     --text-color: #f5f8fc;
-    --primary-accent: #D06822; /* Orange color */
+    --primary-accent: #D06822;
     --secondary-accent: #3a3b3c;
     --border-color: #2a3b57;
-    --header-text: #e3effe; /* This is the white/light color for dark mode header */
+    --header-text: #e3effe;
     --icon-color: #ced4da;
 }
 
@@ -55,20 +55,19 @@ body {
 
 .sub-container {
     display: flex;
-    flex-direction: row; /* Default to horizontal layout for larger screens */
+    flex-direction: row;
     gap: 20px;
     width: 100%;
     align-items: flex-start;
 }
 
-.translator-wrapper { /* Main section for translator UI */
+.translator-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* New: Structure for main translation area (language select + text boxes) */
 .translation-area {
     display: flex;
     flex-direction: column;
@@ -76,7 +75,6 @@ body {
     flex-grow: 1;
 }
 
-/* New: Container for input/output text areas (grid layout) */
 .text-input-output {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -99,14 +97,14 @@ body {
 }
 
 .logo { 
-    height: 90px; /* Corrected height unit */
-    width: 90px;  /* Corrected width unit */
+    height: 90px;
+    width: 90px;
 }
 
 .header h1 {
     margin: 0;
     font-size: 1.8em;
-    color: var(--header-text); /* CHANGED: Now uses --header-text */
+    color: var(--header-text);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -114,14 +112,14 @@ body {
 .header h1 span {
     display: block;
     font-size: 0.5em;
-    font-weight:80; /* Font-weight should be a number like 400, 700, or a keyword like 'normal', 'bold' */
-    color: var(--logospan-text); /* Ensure --logospan-text is defined and used for this */
+    font-weight: 400; /* Corrected font-weight value */
+    color: var(--logospan-text);
     text-transform: none;
     letter-spacing: normal;
     margin-top: 2px;
 }
 
-/* Theme Toggle Button - SINGLE TOGGLE DESIGN */
+/* Theme Toggle Button */
 .theme-toggle-button {
     background: var(--secondary-bg);
     border: 1px solid var(--border-color);
@@ -137,7 +135,7 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Ensure no overflow during rotation */
+    overflow: hidden;
 }
 
 .theme-toggle-button:hover {
@@ -151,39 +149,37 @@ body {
     transform: scale(0.95);
 }
 
-/* Icon rotation for theme toggle */
 .theme-toggle-button i {
-    transition: transform 0.5s ease-in-out; /* Smooth rotation */
+    transition: transform 0.5s ease-in-out;
 }
 
 body.dark-mode .theme-toggle-button i {
-    transform: rotate(360deg); /* Rotate for dark mode */
+    transform: rotate(360deg);
 }
+
 body:not(.dark-mode) .theme-toggle-button i {
-    transform: rotate(0deg); /* Reset rotation for light mode */
+    transform: rotate(0deg);
 }
 
-
-/* Dark mode specific styling for toggle button */
 body.dark-mode .theme-toggle-button {
-    color: #ffd700; /* Sun color for dark mode */
+    color: #ffd700;
 }
 
 body.dark-mode .theme-toggle-button:hover {
-    background-color: var(--primary-accent); /* Orange accent */
+    background-color: var(--primary-accent);
     color: white;
     box-shadow: 0 4px 15px rgba(208, 104, 34, 0.3);
 }
 
 /* Language Select */
-.language-select { /* New: Flex container for from-lang, swap, to-lang */
+.language-select {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 15px;
 }
 
-.from-lang { /* Wrapper for native select */
+.from-lang {
     flex: 1; 
     position: relative;
     background-color: var(--secondary-bg);
@@ -192,14 +188,13 @@ body.dark-mode .theme-toggle-button:hover {
 }
 
 .to-lang { 
-    flex: 1; /* Changed to 1:1 ratio for from-lang and to-lang as per typical layout */
-    font-weight:700;
+    flex: 1;
+    font-weight: 700;
     position: relative;
     background-color: var(--secondary-bg);
     border-radius: 10px;
     border: 1px solid var(--border-color);
 }
-
 
 .language-select select {
     width: 100%;
@@ -228,7 +223,7 @@ body.dark-mode .theme-toggle-button:hover {
     transform: translateY(-50%);
     color: var(--icon-color);
     pointer-events: none;
-    font-size: 1.2em; /* Ensure this is set for arrows */
+    font-size: 1.2em;
     transition: transform 0.3s ease;
 }
 
@@ -239,9 +234,9 @@ body.dark-mode .theme-toggle-button:hover {
     border: none;
     font-size: 1.2em;
     cursor: pointer;
-    width: 45px; /* Fixed size for circular button */
-    height: 45px; /* Fixed size for circular button */
-    border-radius: 50%; /* Make it circular */
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -251,15 +246,14 @@ body.dark-mode .theme-toggle-button:hover {
 }
 
 .swap-button:hover {
-    background-color: #1a57b9; /* Slightly darker accent */
-    transform: rotate(15deg); /* Subtle rotation on hover */
+    background-color: #1a57b9;
+    transform: rotate(15deg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .swap-button:active {
     transform: rotate(0deg);
 }
-
 
 /* Custom Dropdown for Target Languages */
 .custom-dropdown {
@@ -469,6 +463,9 @@ body.dark-mode .theme-toggle-button:hover {
     gap: 10px;
 }
 
+/* .input-actions-bottom .trash-button {
+    /* Specific styles for trash button if needed, otherwise inherits .action-button */
+
 .output-actions-bottom {
     position: absolute;
     bottom: 15px;
@@ -547,7 +544,6 @@ body.dark-mode .theme-toggle-button:hover {
     box-shadow: 0 2px 8px rgba(34, 103, 208, 0.1);
 }
 
-/* App Footer (Removed as per request) */
 .app-footer {
     display: none;
 }
@@ -577,10 +573,36 @@ body.dark-mode .theme-toggle-button:hover {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    height: calc(220px + 20px + 30px + 20px); /* input/output box height + gap + translate btn height + margin-top for translate btn */
-    max-height: calc(220px + 20px + 45px + 20px);
+    height: calc(220px + 20px + 30px + 20px); /* Adjusted based on fixed input/output box height + gaps + translate btn height */
+    max-height: calc(220px + 20px + 45px + 20px); /* Keeping original calculation for max-height logic */
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
+}
+
+/* History close button for mobile */
+.history-close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    color: var(--icon-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: none; /* Hidden by default, shown in mobile media query */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.history-close-button:hover {
+    background-color: var(--primary-accent);
+    color: white;
+    transform: scale(1.05);
 }
 
 .history-header {
@@ -735,7 +757,6 @@ body.dark-mode .theme-toggle-button:hover {
     padding: 20px 0;
 }
 
-/* Loading animation */
 .loading {
     color: var(--primary-accent);
     animation: pulse 1.5s ease-in-out infinite;
@@ -753,41 +774,35 @@ body.dark-mode .theme-toggle-button:hover {
     100% { opacity: 0.6; }
 }
 
-/* Smooth transitions for theme switching */
 * {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* 5. Responsive Design */
 
-/* Desktop Only Styles */
-@media (min-width: 1025px) {
-    /* No specific desktop-only hidden elements */
-}
-
 /* Tablet & Mobile Styles */
 @media (max-width: 1024px) {
     body {
         align-items: flex-start;
-        padding: 15px; /* Adjust padding for tablets */
+        padding: 15px;
     }
 
     .main-container {
-        padding: 15px; /* Adjust padding for tablets */
-        gap: 15px; /* Adjust gap for tablets */
+        padding: 15px;
+        gap: 15px;
     }
 
     .sub-container {
         flex-direction: column;
         align-items: center;
-        gap: 20px; /* Adjust gap for tablets */
+        gap: 20px;
     }
 
     .translator-wrapper,
     .history-container {
         flex: none;
         width: 100%;
-        max-width: 700px; /* Max width for tablets */
+        max-width: 700px;
         position: relative;
         top: 0;
         height: auto;
@@ -801,29 +816,35 @@ body.dark-mode .theme-toggle-button:hover {
         left: 0;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 1000;
-        padding: 15px; /* Adjust padding for tablet overlay */
+        padding: 20px;
         justify-content: center;
         align-items: center;
         opacity: 0;
         transform: translateX(0);
         transition: all 0.3s ease-in-out;
-        display: none; /* Hidden by default */
+        display: none;
     }
 
     .history-container.show {
-        display: flex; /* Use flex to center content */
+        display: flex;
         opacity: 1;
     }
 
     .history-panel-inner {
-        max-height: 90vh; /* Allow more height for tablet overlay */
+        max-height: 85vh; /* Adjusted for overall fit */
         width: 100%;
-        padding: 15px; /* Adjust padding for tablet panel */
+        max-width: 500px; /* Limit width of panel within overlay */
+        padding: 20px;
+        position: relative; /* For close button positioning */
+    }
+
+    .history-close-button {
+        display: flex; /* Show close button on mobile */
     }
 
     .header {
-        flex-direction: column; /* Stack logo and theme toggle */
-        gap: 10px;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .logo-container {
@@ -832,92 +853,243 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .theme-toggle-button {
-        margin-left: auto; /* Push to right if header is row */
-        margin-right: auto; /* Center if header is column */
+        margin: 0 auto; /* Center theme button below logo */
     }
 
     .language-select {
-        flex-direction: column; /* Stack language selects */
-        gap: 10px;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .from-lang,
     .to-lang {
-        flex: none; /* Remove flex sizing */
-        width: 100%; /* Take full width */
+        flex: none;
+        width: 100%;
     }
 
     .swap-button {
-        transform: rotate(90deg); /* Rotate swap button */
-        margin: 10px auto; /* Center horizontally */
+        transform: rotate(90deg);
+        margin: 10px auto;
         flex-shrink: 0;
     }
 
     .text-input-output {
-        grid-template-columns: 1fr; /* Stack input and output */
+        grid-template-columns: 1fr;
         gap: 15px;
     }
 
     .input-box,
     .output-box {
-        height: 200px; /* Adjust height for tablet */
-        min-height: 200px;
+        height: 180px; /* Adjusted height for tablet */
+        min-height: 180px;
     }
 
     .translate-button-container {
-        margin-top: 10px; /* Adjust spacing */
+        margin-top: 15px;
     }
 }
 
-/* Smaller Mobile Device Styles */
-@media (max-width: 480px) { /* Targeting smaller phones like iPhone SE, older Androids */
+/* Small Mobile Devices (480px and below) */
+@media (max-width: 480px) {
     body {
         padding: 10px;
     }
 
     .main-container {
-        padding: 10px;
-        gap: 10px;
+        padding: 12px;
+        gap: 12px;
+        border-radius: 12px;
     }
     
     .header{
       flex-direction: row; /* Keep logo and toggle side-by-side on very small screens */  
-      justify-content: space-between; /* Space out logo and toggle */
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;                       
-  }
+      gap: 10px; /* Slightly larger gap for elements */                      
+    }
     .logo-container {
-        width: auto; /* Allow logo container to shrink */
-        justify-content: flex-start; /* Align logo to start */
-    }
-    .theme-toggle-button {
-        margin: 0; /* Remove auto margins to allow space-between */
-        width: 38px; /* Slightly smaller button */
-        height: 38px;
-        font-size: 1.2em;
-    }
-
-    .header h1 {
-        font-size: 1.2em; /* Smaller font for title */
-    }
-
-    .header h1 span {
-        font-size: 0.45em; /* Smaller font for subtitle */
+        width: auto;
+        justify-content: flex-start;
+        gap: 8px;
     }
 
     .logo {
-        height: 30px; /* Smaller logo */
-        width: 30px;
+        height: 35px; /* Slightly larger logo for 480px */
+        width: 35px;
+    }
+
+    .header h1 {
+        font-size: 1.4em; /* Slightly larger font for title */
+    }
+
+    .header h1 span {
+        font-size: 0.5em; /* Adjusted subtitle font size */
+    }
+
+    .theme-toggle-button {
+        margin: 0;
+        width: 44px; /* Slightly larger button */
+        height: 44px;
+        font-size: 1.4em; /* Slightly larger icon */
     }
 
     .language-select {
-        gap: 8px; /* Smaller gap */
+        gap: 10px;
     }
 
     .language-select select,
     .dropdown-selected {
-        font-size: 0.95em; /* Slightly smaller font */
-        padding: 8px 10px; /* Reduced padding */
+        font-size: 1em; /* Standard font size */
+        padding: 10px 12px;
+    }
+
+    .from-lang i,
+    .to-lang i {
+        font-size: 1.1em; /* Slightly larger icon */
+        right: 10px;
+    }
+
+    .swap-button {
+        width: 40px; /* Slightly larger swap button */
+        height: 40px;
+        font-size: 1.1em;
+    }
+
+    .input-box,
+    .output-box {
+        height: 160px;
+        min-height: 160px;
+        padding: 12px;
+        gap: 8px;
+        border-radius: 12px;
+    }
+
+    .label-container {
+        font-size: 0.8em;
+    }
+
+    .input-box textarea,
+    .output-text-area {
+        font-size: 1em;
+    }
+
+    .text-area-actions .action-button {
+        width: 30px; /* Slightly larger action buttons */
+        height: 30px;
+        font-size: 1.2em;
+    }
+
+    .output-actions-bottom {
+        bottom: 10px; /* Keep consistent with padding */
+        right: 12px;
+        gap: 8px;
+    }
+
+    .char-count {
+        font-size: 0.8em;
+    }
+
+    .translate-button {
+        padding: 10px 22px;
+        font-size: 1em;
+    }
+
+    .history-container {
+        padding: 15px;
+    }
+
+    .history-panel-inner {
+        padding: 15px;
+        max-height: 85vh; /* Maintain relative max-height */
+        border-radius: 12px;
+    }
+
+    .history-close-button {
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        font-size: 1.2em;
+    }
+
+    .history-header h2 {
+        font-size: 1.1em;
+    }
+
+    .clear-history-button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+
+    .history-item {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+
+    .history-source {
+        font-size: 0.9em;
+    }
+
+    .translation-item {
+        font-size: 0.9em;
+    }
+
+    .delete-history-item {
+        font-size: 1.1em;
+        width: 22px;
+        height: 22px;
+        top: 8px;
+        right: 8px;
+    }
+}
+
+/* Extra Small Mobile Devices (360px and below) */
+@media (max-width: 360px) {
+    body {
+        padding: 8px;
+    }
+
+    .main-container {
+        padding: 10px;
+        gap: 10px;
+        border-radius: 10px;
+    }
+
+    .logo {
+        height: 28px;
+        width: 28px;
+    }
+
+    .logo-container {
+        gap: 6px;
+    }
+
+    .header {
+        gap: 6px; /* Smaller gap in header */
+    }
+
+    .header h1 {
+        font-size: 1.1em;
+    }
+
+    .header h1 span {
+        font-size: 0.4em;
+    }
+
+    .theme-toggle-button {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2em;
+    }
+
+    .language-select {
+        gap: 8px;
+    }
+
+    .language-select select,
+    .dropdown-selected {
+        font-size: 0.9em;
+        padding: 8px 10px;
     }
 
     .from-lang i,
@@ -927,17 +1099,18 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .swap-button {
-        width: 38px; /* Smaller swap button */
-        height: 38px;
+        width: 36px;
+        height: 36px;
         font-size: 0.9em;
     }
 
     .input-box,
     .output-box {
-        height: 160px; /* Further adjust height for very small screens */
-        min-height: 160px;
+        height: 140px; /* Adjusted height for 360px */
+        min-height: 140px;
         padding: 10px;
-        gap: 5px; /* Smaller gap inside boxes */
+        gap: 6px;
+        border-radius: 10px;
     }
 
     .label-container {
@@ -946,18 +1119,32 @@ body.dark-mode .theme-toggle-button:hover {
 
     .input-box textarea,
     .output-text-area {
-        font-size: 0.95em;
+        font-size: 0.9em;
+        line-height: 1.4;
+    }
+
+    .output-text-area {
+        top: 35px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        padding-bottom: 40px; /* Keep space for buttons */
+    }
+
+    .output-text-area .initial-message {
+        font-size: 0.8em;
     }
 
     .text-area-actions .action-button {
-        width: 26px; /* Smaller action buttons */
-        height: 26px;
+        width: 28px; /* Adjusted size */
+        height: 28px;
         font-size: 1em;
     }
+
     .output-actions-bottom {
-        bottom: 10px; /* Adjust position */
+        bottom: 10px; /* Adjusted position */
         right: 10px;
-        gap: 8px;
+        gap: 6px;
     }
 
     .char-count {
@@ -966,7 +1153,12 @@ body.dark-mode .theme-toggle-button:hover {
 
     .translate-button {
         padding: 8px 18px;
-        font-size: 0.85em;
+        font-size: 0.9em;
+        border-radius: 8px;
+    }
+
+    .translate-button-container {
+        margin-top: 10px;
     }
 
     .history-container {
@@ -974,7 +1166,17 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .history-panel-inner {
-        padding: 10px;
+        padding: 15px; /* Consistent padding */
+        max-height: 85vh; /* Keep relative height */
+        border-radius: 10px;
+    }
+
+    .history-close-button {
+        top: 8px;
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        font-size: 1em;
     }
 
     .history-header h2 {
@@ -982,42 +1184,363 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .clear-history-button {
-        padding: 4px 8px;
-        font-size: 0.75em;
+        padding: 5px 10px;
+        font-size: 0.8em;
     }
 
     .history-item {
         padding: 10px;
+        margin-bottom: 6px;
+    }
+
+    .history-source {
         font-size: 0.85em;
     }
 
+    .translation-item {
+        font-size: 0.85em;
+        padding-left: 8px;
+    }
+
     .delete-history-item {
+        font-size: 1em;
+        width: 20px;
+        height: 20px;
+        top: 6px;
+        right: 6px;
+    }
+    .dropdown-options {
+        max-height: 150px;
+    }
+}
+
+/* Ultra Small Mobile Devices (320px and below) */
+@media (max-width: 320px) {
+    body {
+        padding: 5px; /* Minimal padding */
+    }
+
+    .main-container {
+        padding: 8px;
+        gap: 8px;
+        border-radius: 8px;
+    }
+
+    .logo {
+        height: 28px;
+        width: 28px;
+    }
+
+    .logo-container {
+        gap: 6px;
+    }
+
+    .header {
+        gap: 6px;
+    }
+
+    .header h1 {
+        font-size: 1.1em;
+        letter-spacing: 0.02em;
+    }
+
+    .header h1 span {
+        font-size: 0.4em;
+        margin-top: 1px;
+    }
+
+    .theme-toggle-button {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2em;
+    }
+
+    .language-select {
+        gap: 6px;
+    }
+
+    .language-select select,
+    .dropdown-selected {
+        font-size: 0.85em;
+        padding: 6px 8px;
+    }
+
+    .from-lang i,
+    .to-lang i {
+        font-size: 0.8em;
+        right: 6px;
+    }
+
+    .swap-button {
+        width: 36px;
+        height: 36px;
         font-size: 0.9em;
-        width: 18px;
-        height: 18px;
-        top: 8px;
+    }
+
+    .input-box,
+    .output-box {
+        height: 120px; /* Minimized height for 320px */
+        min-height: 120px;
+        padding: 8px;
+        gap: 4px;
+        border-radius: 8px;
+    }
+
+    .label-container {
+        font-size: 0.7em;
+    }
+
+    .input-box textarea,
+    .output-text-area {
+        font-size: 0.85em;
+        line-height: 1.3;
+    }
+
+    .output-text-area {
+        top: 30px;
+        left: 8px;
         right: 8px;
+        bottom: 8px;
+        padding-bottom: 35px; /* Adjust padding for smaller buttons */
+    }
+
+    .output-text-area .initial-message {
+        font-size: 0.8em;
+        width: calc(100% - 16px);
+    }
+
+    .text-area-actions .action-button {
+        width: 24px;
+        height: 24px;
+        font-size: 1em;
+    }
+
+    .output-actions-bottom {
+        bottom: 8px;
+        right: 8px;
+        gap: 6px;
+    }
+
+    .char-count {
+        font-size: 0.7em;
+    }
+
+    .translate-button {
+        padding: 6px 15px;
+        font-size: 0.85em;
+        border-radius: 6px;
+    }
+
+    .translate-button-container {
+        margin-top: 8px;
+    }
+
+    .history-container {
+        padding: 8px;
+    }
+
+    .history-panel-inner {
+        padding: 12px;
+        max-height: 75vh;
+        border-radius: 8px;
+        max-width: calc(100vw - 16px);
+    }
+
+    .history-close-button {
+        top: 6px;
+        right: 6px;
+        width: 28px;
+        height: 28px;
+        font-size: 0.9em;
+    }
+
+    .history-header {
+        padding-bottom: 6px;
+        margin-bottom: 6px;
+        padding-right: 30px; /* Make room for close button */
+    }
+
+    .history-header h2 {
+        font-size: 0.9em;
+    }
+
+    .clear-history-button {
+        padding: 3px 6px;
+        font-size: 0.7em;
+    }
+
+    .history-item {
+        padding: 8px;
+        margin-bottom: 4px;
+        border-radius: 8px;
+    }
+
+    .history-source {
+        font-size: 0.8em;
+        margin-bottom: 4px;
+    }
+
+    .translation-item {
+        font-size: 0.8em;
+        padding-left: 6px;
+        margin-top: 3px;
+        border-left-width: 2px;
+    }
+
+    .delete-history-item {
+        font-size: 0.8em;
+        width: 16px;
+        height: 16px;
+        top: 4px;
+        right: 4px;
+        padding: 2px;
+    }
+
+    .dropdown-options {
+        max-height: 120px;
+        border-radius: 8px;
+    }
+
+    .dropdown-option {
+        padding: 8px 10px;
+        font-size: 0.85em;
+    }
+
+    .no-history {
+        padding: 10px 0;
+        font-size: 0.8em;
     }
 }
 
 
-/* Specific height for history panel on very small screens to avoid overflow */
-@media (max-width: 360px){
-  .main-container{ padding: 8px; }
+/* Landscape orientation adjustments for small screens (re-evaluated) */
+@media (max-width: 640px) and (orientation: landscape) {
+    .main-container {
+        flex-direction: row; /* Try to keep side-by-side if enough width */
+        max-width: 90%;
+        padding: 15px;
+        gap: 15px;
+    }
+    .sub-container {
+        flex-direction: row; /* Keep main content side-by-side */
+        gap: 15px;
+    }
+    .translator-wrapper {
+        width: auto;
+        max-width: none;
+        flex: 1; /* Take available space */
+        gap: 10px;
+    }
+    .history-container {
+        /* On landscape, history can still be a fixed overlay, but adjust sizing */
+        position: fixed; 
+        top: 0; bottom: 0; left: 0; right: 0;
+        padding: 10px;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0,0,0,0.6); /* Slightly darker overlay */
+        z-index: 1000;
+        display: none; /* Still hidden by default */
+        opacity: 0;
+    }
+    .history-container.show {
+        display: flex;
+        opacity: 1;
+    }
+    .history-panel-inner {
+        width: 80vw; /* Take more width in landscape */
+        max-width: 500px; /* But limit for larger screens */
+        height: auto; /* Content-driven height */
+        max-height: 85vh; /* Max height to fit screen */
+        padding: 15px;
+        border-radius: 15px;
+    }
+    .text-input-output {
+        grid-template-columns: 1fr 1fr; /* Keep side-by-side */
+        gap: 10px;
+        flex-grow: 1;
+    }
+    .input-box,
+    .output-box {
+        height: 120px; /* Reduced height to fit landscape */
+        min-height: 120px;
+        padding: 10px;
+        gap: 6px;
+    }
+    .output-text-area {
+        top: 35px;
+        padding-bottom: 35px; /* Adjust padding for smaller height */
+    }
+    .text-area-actions .action-button {
+        width: 28px; height: 28px; font-size: 1.1em;
+    }
+    .output-actions-bottom {
+        bottom: 8px; right: 8px; gap: 6px;
+    }
+    .language-select {
+        flex-direction: row; /* Try to keep side-by-side in landscape */
+        flex-wrap: wrap; /* Allow wrapping */
+        gap: 8px;
+    }
+    .from-lang, .to-lang {
+        flex: 1; /* Distribute space */
+        min-width: 120px; /* Ensure a minimum width */
+    }
+    .swap-button {
+        transform: rotate(0deg); /* No rotation in landscape if side-by-side */
+        margin: 0 5px; /* Adjust margin */
+        width: 40px; height: 40px;
+    }
+    .translate-button {
+        padding: 8px 20px;
+        font-size: 0.9em;
+    }
+    .header {
+        flex-direction: row; /* Keep header elements in a row */
+        gap: 10px;
+    }
+}
+
+/* Very short screens (height-based media queries) */
+@media (max-height: 600px){
+  .dropdown-options{
+      max-height: 120px; /* Further reduce for very short screens */              
+  }
+
   .input-box,
   .output-box{
-      min-height: 140px; /* Even smaller boxes for tiny screens */
-      height: 140px;
+      height: 100px;
+      min-height: 100px;
   }
   .history-panel-inner{
-      max-height: calc(100vh - 30px); /* Ensure it fits vertically */
+      max-height: 80vh; /* Re-evaluate max height */
   }
 }
 
-/* 5. dropdown height for smaller screens */
-@media (max-height: 600px){
-  .dropdown-options{
-      max-height: 180px;              
-      overflow-y: auto;               
-  }
+@media (max-height: 500px){
+    .input-box,
+    .output-box {
+        height: 80px; /* Drastically reduce height for extremely short screens */
+        min-height: 80px;
+        padding: 8px;
+    }
+    .output-text-area {
+        top: 25px;
+        padding-bottom: 30px;
+    }
+    .history-panel-inner {
+        max-height: 70vh;
+        padding: 10px;
+    }
+    .header h1 {
+        font-size: 1em;
+    }
+    .language-select select, .dropdown-selected {
+        padding: 5px 8px;
+        font-size: 0.8em;
+    }
+    .translate-button {
+        padding: 6px 15px;
+        font-size: 0.8em;
+    }
 }
