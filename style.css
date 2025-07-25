@@ -1,0 +1,1023 @@
+/* 1. Root Variables (Light & Dark Mode)*/
+:root {
+    --primary-bg: #e3effe;
+    --secondary-bg: #ffffff;
+    --widget-bg: #f0f8ff;
+    --text-color: #1b192d;
+    --primary-accent: #2267d0;
+    --logospan-text:#8eb2e8; /* This variable is not used in the provided CSS, ensure it's used if intended */
+    --secondary-accent: #dbe9ff;
+    --border-color: #d1e3f8;
+    --header-text: #1f519c;
+    --icon-color: #495057;
+}
+
+body.dark-mode {
+    --primary-bg: #121a26;
+    --secondary-bg: #1a2333;
+    --widget-bg: #1a2333;
+    --text-color: #f5f8fc;
+    --primary-accent: #D06822; /* Orange color */
+    --secondary-accent: #3a3b3c;
+    --border-color: #2a3b57;
+    --header-text: #e3effe; /* This is the white/light color for dark mode header */
+    --icon-color: #ced4da;
+}
+
+/* 2. Base & Page Layout */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main-container {
+    background-color: var(--widget-bg);
+    border-radius: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.sub-container {
+    display: flex;
+    flex-direction: row; /* Default to horizontal layout for larger screens */
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.translator-wrapper { /* Main section for translator UI */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* New: Structure for main translation area (language select + text boxes) */
+.translation-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+/* New: Container for input/output text areas (grid layout) */
+.text-input-output {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+/* 3. Component Styles */
+.header {
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo { 
+    height: 90px; /* Corrected height unit */
+    width: 90px;  /* Corrected width unit */
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.8em;
+    color: var(--header-text); /* CHANGED: Now uses --header-text */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.header h1 span {
+    display: block;
+    font-size: 0.5em;
+    font-weight:80; /* Font-weight should be a number like 400, 700, or a keyword like 'normal', 'bold' */
+    color: var(--logospan-text); /* Ensure --logospan-text is defined and used for this */
+    text-transform: none;
+    letter-spacing: normal;
+    margin-top: 2px;
+}
+
+/* Theme Toggle Button - SINGLE TOGGLE DESIGN */
+.theme-toggle-button {
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    padding: 0; 
+    border-radius: 50%;
+    color: var(--icon-color);
+    font-size: 1.5em;
+    transition: all 0.3s ease;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensure no overflow during rotation */
+}
+
+.theme-toggle-button:hover {
+    background-color: var(--primary-accent);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(34, 103, 208, 0.3);
+}
+
+.theme-toggle-button:active {
+    transform: scale(0.95);
+}
+
+/* Icon rotation for theme toggle */
+.theme-toggle-button i {
+    transition: transform 0.5s ease-in-out; /* Smooth rotation */
+}
+
+body.dark-mode .theme-toggle-button i {
+    transform: rotate(360deg); /* Rotate for dark mode */
+}
+body:not(.dark-mode) .theme-toggle-button i {
+    transform: rotate(0deg); /* Reset rotation for light mode */
+}
+
+
+/* Dark mode specific styling for toggle button */
+body.dark-mode .theme-toggle-button {
+    color: #ffd700; /* Sun color for dark mode */
+}
+
+body.dark-mode .theme-toggle-button:hover {
+    background-color: var(--primary-accent); /* Orange accent */
+    color: white;
+    box-shadow: 0 4px 15px rgba(208, 104, 34, 0.3);
+}
+
+/* Language Select */
+.language-select { /* New: Flex container for from-lang, swap, to-lang */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.from-lang { /* Wrapper for native select */
+    flex: 1; 
+    position: relative;
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.to-lang { 
+    flex: 1; /* Changed to 1:1 ratio for from-lang and to-lang as per typical layout */
+    font-weight:700;
+    position: relative;
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+
+.language-select select {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background-color: transparent;
+    color: var(--text-color);
+    font-size: 1.1em;
+    font-weight: 500;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.language-select select:focus {
+    outline: none;
+}
+
+.from-lang i,
+.to-lang i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--icon-color);
+    pointer-events: none;
+    font-size: 1.2em; /* Ensure this is set for arrows */
+    transition: transform 0.3s ease;
+}
+
+/* Swap Button */
+.swap-button {
+    background: var(--primary-accent);
+    color: white;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    width: 45px; /* Fixed size for circular button */
+    height: 45px; /* Fixed size for circular button */
+    border-radius: 50%; /* Make it circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.swap-button:hover {
+    background-color: #1a57b9; /* Slightly darker accent */
+    transform: rotate(15deg); /* Subtle rotation on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.swap-button:active {
+    transform: rotate(0deg);
+}
+
+
+/* Custom Dropdown for Target Languages */
+.custom-dropdown {
+    flex: 1;
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-selected {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    min-height: auto;
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.dropdown-selected:hover {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px rgba(34, 103, 208, 0.1);
+}
+
+.dropdown-options {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-options.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1em;
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.dropdown-option:hover {
+    background-color: var(--secondary-accent);
+}
+
+.dropdown-option input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: var(--primary-accent);
+}
+
+/* Input/Output Text Boxes */
+.input-box,
+.output-box {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    background-color: var(--secondary-bg);
+    padding: 15px;
+    gap: 10px;
+    border: 1px solid var(--border-color);
+    height: 220px;
+    min-height: 220px;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.input-box:focus-within,
+.output-box:focus-within {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px rgba(34, 103, 208, 0.1);
+}
+
+.label-container {
+    color: #6c757d;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.input-box textarea {
+    border: none;
+    flex-grow: 1;
+    resize: none;
+    background-color: transparent;
+    color: var(--text-color);
+    font-size: 1.1em;
+    outline: none;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-right: 5px;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5;
+}
+
+.input-box textarea::placeholder {
+    color: var(--icon-color);
+    opacity: 0.5;
+}
+
+.output-text-area {
+    flex-grow: 1;
+    resize: none;
+    background-color: transparent;
+    color: var(--text-color);
+    font-size: 1.1em;
+    outline: none;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-right: 5px;
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    padding-bottom: 45px;
+}
+
+.output-text-area .initial-message {
+    text-align: center;
+    color: var(--icon-color);
+    opacity: 0.4;
+    font-size: 0.9em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 30px);
+    pointer-events: none;
+}
+
+/* Action buttons at the bottom of input/output boxes */
+.text-area-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #6c757d;
+    font-size: 0.9em;
+    margin-top: auto;
+    width: 100%;
+}
+
+.text-area-actions .action-button {
+    background: none;
+    border: none;
+    color: var(--icon-color);
+    font-size: 1.3em;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.text-area-actions .action-button:hover {
+    background-color: var(--secondary-accent);
+    color: var(--primary-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Specific positioning for input box actions (trash & char count) */
+.input-actions-bottom {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.output-actions-bottom {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    justify-content: flex-end;
+    gap: 10px;
+    background-color: transparent;
+    padding: 0;
+    width: auto;
+    z-index: 5;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+}
+
+/* Char count style */
+.char-count {
+    font-size: 0.9em;
+    color: var(--icon-color);
+    font-weight: 500;
+    margin-left: auto;
+}
+
+/* Character limit exceeded styling */
+.char-count.char-limit-exceeded {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Copy button specific style for "copied" state */
+.copy-button.copied {
+    background-color: #28a745 !important;
+    color: white !important;
+    border-color: #28a745 !important;
+    opacity: 1;
+    font-size: 1.3em;
+    transform: none;
+    box-shadow: none;
+}
+
+.translate-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.translate-button {
+    background-color: var(--primary-accent);
+    color: white;
+    font-weight: 600;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 5px;
+    display: block;
+    box-shadow: 0 2px 8px rgba(34, 103, 208, 0.2);
+}
+
+.translate-button:hover {
+    opacity: 0.9;
+    background-color: var(--primary-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(34, 103, 208, 0.3);
+}
+
+.translate-button:active {
+    transform: translateY(0);
+}
+
+.translate-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(34, 103, 208, 0.1);
+}
+
+/* App Footer (Removed as per request) */
+.app-footer {
+    display: none;
+}
+
+/* 4. History Panel Styles */
+.history-container {
+    position: sticky;
+    top: 20px;
+    width: 300px;
+    flex-shrink: 0;
+    display: none;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s ease-in-out;
+}
+
+.history-container.show {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.history-panel-inner {
+    background-color: var(--widget-bg);
+    border-radius: 15px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: calc(220px + 20px + 30px + 20px); /* input/output box height + gap + translate btn height + margin-top for translate btn */
+    max-height: calc(220px + 20px + 45px + 20px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.history-header h2 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 1.2em;
+    color: var(--header-text);
+}
+
+.clear-history-button {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    color: var(--primary-accent);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.clear-history-button:hover {
+    background-color: var(--primary-accent);
+    color: white;
+    border-color: var(--primary-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.history-item {
+    position: relative;
+    margin-bottom: 10px;
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 15px;
+}
+
+.history-item:hover {
+    background-color: var(--secondary-accent);
+    border-color: var(--primary-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.history-item-content {
+    cursor: pointer;
+}
+
+.history-date {
+    font-size: 0.8em;
+    color: var(--icon-color);
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.history-source {
+    margin: 0 0 8px 0;
+    font-size: 1em;
+    font-weight: 600;
+    word-wrap: break-word;
+    color: var(--text-color);
+}
+
+.translation-item {
+    margin: 0;
+    font-size: 1em;
+    word-wrap: break-word;
+    padding-left: 10px;
+    border-left: 3px solid var(--secondary-accent);
+    margin-top: 5px;
+    color: var(--text-color);
+}
+
+.translation-result {
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 15px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.translation-result:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.translation-result h4 {
+    margin: 0 0 10px 0;
+    color: var(--primary-accent);
+    font-size: 1.1em;
+}
+
+.translation-result p {
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.4;
+}
+
+.delete-history-item {
+    background: none;
+    border: none;
+    color: var(--icon-color);
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.delete-history-item:hover {
+    opacity: 1;
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+    transform: scale(1.1);
+}
+
+.no-history {
+    text-align: center;
+    color: var(--icon-color);
+    font-style: italic;
+    padding: 20px 0;
+}
+
+/* Loading animation */
+.loading {
+    color: var(--primary-accent);
+    animation: pulse 1.5s ease-in-out infinite;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 30px);
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Smooth transitions for theme switching */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 5. Responsive Design */
+
+/* Desktop Only Styles */
+@media (min-width: 1025px) {
+    /* No specific desktop-only hidden elements */
+}
+
+/* Tablet & Mobile Styles */
+@media (max-width: 1024px) {
+    body {
+        align-items: flex-start;
+        padding: 15px; /* Adjust padding for tablets */
+    }
+
+    .main-container {
+        padding: 15px; /* Adjust padding for tablets */
+        gap: 15px; /* Adjust gap for tablets */
+    }
+
+    .sub-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px; /* Adjust gap for tablets */
+    }
+
+    .translator-wrapper,
+    .history-container {
+        flex: none;
+        width: 100%;
+        max-width: 700px; /* Max width for tablets */
+        position: relative;
+        top: 0;
+        height: auto;
+    }
+
+    .history-container {
+        position: fixed; /* Always fixed on smaller screens */
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        padding: 15px; /* Adjust padding for tablet overlay */
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transform: translateX(0);
+        transition: all 0.3s ease-in-out;
+        display: none; /* Hidden by default */
+    }
+
+    .history-container.show {
+        display: flex; /* Use flex to center content */
+        opacity: 1;
+    }
+
+    .history-panel-inner {
+        max-height: 90vh; /* Allow more height for tablet overlay */
+        width: 100%;
+        padding: 15px; /* Adjust padding for tablet panel */
+    }
+
+    .header {
+        flex-direction: column; /* Stack logo and theme toggle */
+        gap: 10px;
+    }
+
+    .logo-container {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .theme-toggle-button {
+        margin-left: auto; /* Push to right if header is row */
+        margin-right: auto; /* Center if header is column */
+    }
+
+    .language-select {
+        flex-direction: column; /* Stack language selects */
+        gap: 10px;
+    }
+
+    .from-lang,
+    .to-lang {
+        flex: none; /* Remove flex sizing */
+        width: 100%; /* Take full width */
+    }
+
+    .swap-button {
+        transform: rotate(90deg); /* Rotate swap button */
+        margin: 10px auto; /* Center horizontally */
+        flex-shrink: 0;
+    }
+
+    .text-input-output {
+        grid-template-columns: 1fr; /* Stack input and output */
+        gap: 15px;
+    }
+
+    .input-box,
+    .output-box {
+        height: 200px; /* Adjust height for tablet */
+        min-height: 200px;
+    }
+
+    .translate-button-container {
+        margin-top: 10px; /* Adjust spacing */
+    }
+}
+
+/* Smaller Mobile Device Styles */
+@media (max-width: 480px) { /* Targeting smaller phones like iPhone SE, older Androids */
+    body {
+        padding: 10px;
+    }
+
+    .main-container {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .header{
+      flex-direction: row; /* Keep logo and toggle side-by-side on very small screens */  
+      justify-content: space-between; /* Space out logo and toggle */
+      align-items: center;
+      gap: 8px;                       
+  }
+    .logo-container {
+        width: auto; /* Allow logo container to shrink */
+        justify-content: flex-start; /* Align logo to start */
+    }
+    .theme-toggle-button {
+        margin: 0; /* Remove auto margins to allow space-between */
+        width: 38px; /* Slightly smaller button */
+        height: 38px;
+        font-size: 1.2em;
+    }
+
+    .header h1 {
+        font-size: 1.2em; /* Smaller font for title */
+    }
+
+    .header h1 span {
+        font-size: 0.45em; /* Smaller font for subtitle */
+    }
+
+    .logo {
+        height: 30px; /* Smaller logo */
+        width: 30px;
+    }
+
+    .language-select {
+        gap: 8px; /* Smaller gap */
+    }
+
+    .language-select select,
+    .dropdown-selected {
+        font-size: 0.95em; /* Slightly smaller font */
+        padding: 8px 10px; /* Reduced padding */
+    }
+
+    .from-lang i,
+    .to-lang i {
+        font-size: 0.9em;
+        right: 8px;
+    }
+
+    .swap-button {
+        width: 38px; /* Smaller swap button */
+        height: 38px;
+        font-size: 0.9em;
+    }
+
+    .input-box,
+    .output-box {
+        height: 160px; /* Further adjust height for very small screens */
+        min-height: 160px;
+        padding: 10px;
+        gap: 5px; /* Smaller gap inside boxes */
+    }
+
+    .label-container {
+        font-size: 0.75em;
+    }
+
+    .input-box textarea,
+    .output-text-area {
+        font-size: 0.95em;
+    }
+
+    .text-area-actions .action-button {
+        width: 26px; /* Smaller action buttons */
+        height: 26px;
+        font-size: 1em;
+    }
+    .output-actions-bottom {
+        bottom: 10px; /* Adjust position */
+        right: 10px;
+        gap: 8px;
+    }
+
+    .char-count {
+        font-size: 0.75em;
+    }
+
+    .translate-button {
+        padding: 8px 18px;
+        font-size: 0.85em;
+    }
+
+    .history-container {
+        padding: 10px;
+    }
+
+    .history-panel-inner {
+        padding: 10px;
+    }
+
+    .history-header h2 {
+        font-size: 1em;
+    }
+
+    .clear-history-button {
+        padding: 4px 8px;
+        font-size: 0.75em;
+    }
+
+    .history-item {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+
+    .delete-history-item {
+        font-size: 0.9em;
+        width: 18px;
+        height: 18px;
+        top: 8px;
+        right: 8px;
+    }
+}
+
+
+/* Specific height for history panel on very small screens to avoid overflow */
+@media (max-width: 360px){
+  .main-container{ padding: 8px; }
+  .input-box,
+  .output-box{
+      min-height: 140px; /* Even smaller boxes for tiny screens */
+      height: 140px;
+  }
+  .history-panel-inner{
+      max-height: calc(100vh - 30px); /* Ensure it fits vertically */
+  }
+}
+
+/* 5. dropdown height for smaller screens */
+@media (max-height: 600px){
+  .dropdown-options{
+      max-height: 180px;              
+      overflow-y: auto;               
+  }
+}
