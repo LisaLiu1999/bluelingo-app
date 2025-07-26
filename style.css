@@ -1495,14 +1495,18 @@ body.dark-mode .theme-toggle-button:hover {
 }
 @media (min-width: 1025px) {
 
-  
-  .output-box {
-    margin-bottom: 48px;          
+.output-box{
+    margin-bottom: 50px;          
   }
 
- 
-  .output-buttons-container {
-    bottom: -38px;               
-    right: 0;                    
+  
+  .output-buttons-container{
+    position: absolute;          
+    top: 100%;                    
+    transform: translateY(10px);  
+  }
+
+  .output-text-area{
+    padding-bottom: 15px;       
   }
 }
