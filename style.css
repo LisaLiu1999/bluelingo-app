@@ -80,6 +80,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     flex-grow: 1;
+    grid-template-areas: unset; /* Ensure mobile grid areas are reset for desktop */
 }
 
 /* 3. Component Styles */
@@ -329,6 +330,7 @@ body.dark-mode .theme-toggle-button:hover {
     box-sizing: border-box;
     position: relative; /* Keep this to allow absolute positioning of children */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    grid-area: unset; /* Ensure mobile grid area is reset for desktop */
 }
 
 .input-box:focus-within,
@@ -471,6 +473,7 @@ body.dark-mode .theme-toggle-button:hover {
 .translate-button-container {
     display: flex;
     justify-content: center;
+    grid-area: unset; /* Ensure mobile grid area is reset for desktop */
 }
 
 .translate-button {
@@ -865,28 +868,27 @@ body.dark-mode .theme-toggle-button:hover {
         flex: none;
         width: 100%;
     }
-
-    /* Swap button can remain hidden or styled differently for mobile if not desired */
-    /* If you want it on mobile, you might need to reconsider its placement in HTML */
-    .swap-button { 
-        display: none; /* Hide swap button on mobile by default, if not explicitly placed */
-        /* If you add it back, ensure its positioning is suitable for mobile */
+     .translation-area {
+   display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "lang"         /* ⬅︎ 新增 */
+      "input"
+      "translate"
+      "output";
+    gap: 15px;
     }
+      .language-select           { grid-area: lang; }
+  .input-box                 { grid-area: input; }
+  .translate-button-container{ grid-area: translate;
+                               display: flex; justify-content: center; }
+  .output-box                { grid-area: output; }
 
-    .text-input-output {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
+.text-input-output {
+       display: contents;                      
+}
 
-    .input-box,
-    .output-box {
-        height: 180px; /* Adjusted height for tablet */
-        min-height: 180px;
-    }
 
-    .translate-button-container {
-        margin-top: 15px;
-    }
 
     /* output-buttons-container is now always relative to output-box */
     .output-buttons-container {
