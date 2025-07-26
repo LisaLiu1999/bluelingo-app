@@ -227,34 +227,6 @@ body.dark-mode .theme-toggle-button:hover {
     transition: transform 0.3s ease;
 }
 
-/* Swap Button */
-.swap-button {
-    background: var(--primary-accent);
-    color: white;
-    border: none;
-    font-size: 1.2em;
-    cursor: pointer;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.swap-button:hover {
-    background-color: #1a57b9;
-    transform: rotate(15deg);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.swap-button:active {
-    transform: rotate(0deg);
-}
-
 /* Custom Dropdown for Target Languages */
 .custom-dropdown {
     flex: 1;
@@ -355,7 +327,7 @@ body.dark-mode .theme-toggle-button:hover {
     height: 220px;
     min-height: 220px;
     box-sizing: border-box;
-    position: relative;
+    position: relative; /* Keep this to allow absolute positioning of children */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -391,6 +363,7 @@ body.dark-mode .theme-toggle-button:hover {
     opacity: 0.5;
 }
 
+/* output-text-area needs more bottom padding to not overlap buttons */
 .output-text-area {
     flex-grow: 1;
     resize: none;
@@ -405,8 +378,8 @@ body.dark-mode .theme-toggle-button:hover {
     top: 40px;
     left: 15px;
     right: 15px;
-    bottom: 15px;
-    padding-bottom: 45px;
+    bottom: 15px; /* Base for positioning output-buttons-container relative to output-box */
+    padding-bottom: 45px; /* Increased padding to make space for buttons */
 }
 
 .output-text-area .initial-message {
@@ -422,18 +395,8 @@ body.dark-mode .theme-toggle-button:hover {
     pointer-events: none;
 }
 
-/* Action buttons at the bottom of input/output boxes */
-.text-area-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #6c757d;
-    font-size: 0.9em;
-    margin-top: auto;
-    width: 100%;
-}
-
-.text-area-actions .action-button {
+/* Action buttons styling (shared for both input and output action buttons) */
+.action-button {
     background: none;
     border: none;
     color: var(--icon-color);
@@ -450,7 +413,7 @@ body.dark-mode .theme-toggle-button:hover {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-.text-area-actions .action-button:hover {
+.action-button:hover {
     background-color: var(--secondary-accent);
     color: var(--primary-accent);
     transform: translateY(-1px);
@@ -459,34 +422,33 @@ body.dark-mode .theme-toggle-button:hover {
 
 /* Specific positioning for input box actions (trash & char count) */
 .input-actions-bottom {
+    display: flex;
+    align-items: center;
     justify-content: flex-start;
     gap: 10px;
+    color: #6c757d;
+    font-size: 0.9em;
+    margin-top: auto;
+    width: 100%;
 }
 
-/* .input-actions-bottom .trash-button {
-    /* Specific styles for trash button if needed, otherwise inherits .action-button */
-
-.output-actions-bottom {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    justify-content: flex-end;
-    gap: 10px;
-    background-color: transparent;
-    padding: 0;
-    width: auto;
-    z-index: 5;
-    opacity: 1;
-    pointer-events: auto;
-    transition: opacity 0.3s ease;
+/* NEW: Container for output box action buttons (copy and history) */
+.output-buttons-container {
+    position: absolute; /* Position relative to .output-box */
+    bottom: 15px; /* Align to the bottom of output-box */
+    right: 15px; /* Align to the right of output-box */
+    display: flex;
+    gap: 10px; /* Space between the buttons */
+    z-index: 5; /* Ensure buttons are above text area if needed */
 }
+
 
 /* Char count style */
 .char-count {
     font-size: 0.9em;
     color: var(--icon-color);
     font-weight: 500;
-    margin-left: auto;
+    margin-left: auto; /* Pushes char count to the right */
 }
 
 /* Character limit exceeded styling */
@@ -550,20 +512,26 @@ body.dark-mode .theme-toggle-button:hover {
 
 /* 4. History Panel Styles */
 .history-container {
-    position: sticky;
-    top: 20px;
-    width: 300px;
-    flex-shrink: 0;
-    display: none;
+    /* Updated to be a fixed overlay for all mobile/tablet sizes */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    z-index: 1000;
+    padding: 20px;
+    display: flex; /* Use flex to center the panel */
+    justify-content: center;
+    align-items: center;
     opacity: 0;
-    transform: translateX(20px);
-    transition: all 0.3s ease-in-out;
+    pointer-events: none; /* Make it unclickable when hidden */
+    transition: opacity 0.3s ease-in-out;
 }
 
 .history-container.show {
-    display: block;
     opacity: 1;
-    transform: translateX(0);
+    pointer-events: auto; /* Make it clickable when shown */
 }
 
 .history-panel-inner {
@@ -573,46 +541,30 @@ body.dark-mode .theme-toggle-button:hover {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    height: calc(220px + 20px + 30px + 20px); /* Adjusted based on fixed input/output box height + gaps + translate btn height */
-    max-height: calc(220px + 20px + 45px + 20px); /* Keeping original calculation for max-height logic */
+    width: 100%; /* Take full width of parent (max-width handles the actual size) */
+    max-width: 500px; /* Limit width for tablets/larger phones */
+    height: auto; /* Content-driven height */
+    max-height: 85vh; /* Max height to fit screen */
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
+    position: relative; /* For positioning close button */
+    transform: scale(0.95); /* Slight scale animation */
+    transition: transform 0.3s ease-in-out;
 }
 
-/* History close button for mobile */
-.history-close-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    color: var(--icon-color);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: none; /* Hidden by default, shown in mobile media query */
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.2em;
-    transition: all 0.3s ease;
-    z-index: 1001;
-}
-
-.history-close-button:hover {
-    background-color: var(--primary-accent);
-    color: white;
-    transform: scale(1.05);
+.history-container.show .history-panel-inner {
+    transform: scale(1);
 }
 
 .history-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Space out title and buttons */
     align-items: center;
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
+    /* padding-right: 0; Removed, as history-header-actions handles its own spacing */
 }
 
 .history-header h2 {
@@ -622,6 +574,32 @@ body.dark-mode .theme-toggle-button:hover {
     font-size: 1.2em;
     color: var(--header-text);
 }
+
+/* New: History header action buttons container (Clear All and Close) */
+.history-header-actions {
+    display: flex;
+    gap: 10px; /* Space between clear and close buttons */
+    align-items: center;
+}
+
+/* History Close Button (X) - for mobile/overlay */
+.history-close-button {
+    /* Inherits .action-button styles for basic look */
+    /* Override specific properties for this button */
+    background: none; /* Ensure no background */
+    border: none;     /* Ensure no border */
+    font-size: 1.5em; /* Larger icon */
+    color: var(--icon-color); /* Icon color */
+    width: 32px; /* Fixed size */
+    height: 32px; /* Fixed size */
+    margin-left: 5px; /* Add a small margin to separate from Clear All */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+.history-close-button:hover {
+    background-color: var(--secondary-accent);
+    color: var(--primary-accent);
+}
+
 
 .clear-history-button {
     font-family: 'Montserrat', sans-serif;
@@ -635,6 +613,7 @@ body.dark-mode .theme-toggle-button:hover {
     font-weight: 500;
     transition: all 0.3s ease;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .clear-history-button:hover {
@@ -644,6 +623,7 @@ body.dark-mode .theme-toggle-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .history-list {
     list-style: none;
@@ -780,7 +760,7 @@ body.dark-mode .theme-toggle-button:hover {
 
 /* 5. Responsive Design */
 
-/* Tablet & Mobile Styles */
+/* Tablet & Mobile Styles (max-width: 1024px) */
 @media (max-width: 1024px) {
     body {
         align-items: flex-start;
@@ -798,8 +778,7 @@ body.dark-mode .theme-toggle-button:hover {
         gap: 20px;
     }
 
-    .translator-wrapper,
-    .history-container {
+    .translator-wrapper {
         flex: none;
         width: 100%;
         max-width: 700px;
@@ -808,6 +787,7 @@ body.dark-mode .theme-toggle-button:hover {
         height: auto;
     }
 
+    /* History Container remains a fixed overlay for all mobile/tablet */
     .history-container {
         position: fixed; /* Always fixed on smaller screens */
         top: 0;
@@ -817,17 +797,17 @@ body.dark-mode .theme-toggle-button:hover {
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 1000;
         padding: 20px;
+        display: flex; /* Use flex to center the panel */
         justify-content: center;
         align-items: center;
         opacity: 0;
-        transform: translateX(0);
-        transition: all 0.3s ease-in-out;
-        display: none;
+        pointer-events: none; /* Make it unclickable when hidden */
+        transition: opacity 0.3s ease-in-out;
     }
 
     .history-container.show {
-        display: flex;
         opacity: 1;
+        pointer-events: auto; /* Make it clickable when shown */
     }
 
     .history-panel-inner {
@@ -836,11 +816,30 @@ body.dark-mode .theme-toggle-button:hover {
         max-width: 500px; /* Limit width of panel within overlay */
         padding: 20px;
         position: relative; /* For close button positioning */
+        box-sizing: border-box; /* Ensure padding is included in width/height */
+        transform: scale(0.95);
+    }
+    .history-container.show .history-panel-inner {
+        transform: scale(1);
     }
 
+    /* History Close Button (X) */
     .history-close-button {
         display: flex; /* Show close button on mobile */
+        /* Position is handled by flexbox within history-header-actions */
+        /* Top/Right absolute positioning removed as it's not needed with flex */
     }
+
+    .history-header {
+        justify-content: space-between; /* To push title and action buttons apart */
+    }
+
+    .history-header-actions {
+        display: flex; /* Ensure these are flexed */
+        align-items: center;
+        gap: 10px; /* Space between clear all and close buttons */
+    }
+
 
     .header {
         flex-direction: column;
@@ -867,10 +866,11 @@ body.dark-mode .theme-toggle-button:hover {
         width: 100%;
     }
 
-    .swap-button {
-        transform: rotate(90deg);
-        margin: 10px auto;
-        flex-shrink: 0;
+    /* Swap button can remain hidden or styled differently for mobile if not desired */
+    /* If you want it on mobile, you might need to reconsider its placement in HTML */
+    .swap-button { 
+        display: none; /* Hide swap button on mobile by default, if not explicitly placed */
+        /* If you add it back, ensure its positioning is suitable for mobile */
     }
 
     .text-input-output {
@@ -886,6 +886,14 @@ body.dark-mode .theme-toggle-button:hover {
 
     .translate-button-container {
         margin-top: 15px;
+    }
+
+    /* output-buttons-container is now always relative to output-box */
+    .output-buttons-container {
+        bottom: 15px;
+        right: 15px;
+        display: flex;
+        gap: 10px;
     }
 }
 
@@ -905,7 +913,7 @@ body.dark-mode .theme-toggle-button:hover {
       flex-direction: row; /* Keep logo and toggle side-by-side on very small screens */  
       justify-content: space-between;
       align-items: center;
-      gap: 10px; /* Slightly larger gap for elements */                      
+      gap: 10px;                     
     }
     .logo-container {
         width: auto;
@@ -914,23 +922,23 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .logo {
-        height: 35px; /* Slightly larger logo for 480px */
+        height: 35px;
         width: 35px;
     }
 
     .header h1 {
-        font-size: 1.4em; /* Slightly larger font for title */
+        font-size: 1.4em;
     }
 
     .header h1 span {
-        font-size: 0.5em; /* Adjusted subtitle font size */
+        font-size: 0.5em;
     }
 
     .theme-toggle-button {
         margin: 0;
-        width: 44px; /* Slightly larger button */
+        width: 44px;
         height: 44px;
-        font-size: 1.4em; /* Slightly larger icon */
+        font-size: 1.4em;
     }
 
     .language-select {
@@ -939,20 +947,14 @@ body.dark-mode .theme-toggle-button:hover {
 
     .language-select select,
     .dropdown-selected {
-        font-size: 1em; /* Standard font size */
+        font-size: 1em;
         padding: 10px 12px;
     }
 
     .from-lang i,
     .to-lang i {
-        font-size: 1.1em; /* Slightly larger icon */
-        right: 10px;
-    }
-
-    .swap-button {
-        width: 40px; /* Slightly larger swap button */
-        height: 40px;
         font-size: 1.1em;
+        right: 10px;
     }
 
     .input-box,
@@ -972,15 +974,18 @@ body.dark-mode .theme-toggle-button:hover {
     .output-text-area {
         font-size: 1em;
     }
+    .output-text-area {
+        padding-bottom: 45px; /* Consistent padding for buttons */
+    }
 
-    .text-area-actions .action-button {
-        width: 30px; /* Slightly larger action buttons */
+    .action-button { /* Apply to all action buttons */
+        width: 30px; 
         height: 30px;
         font-size: 1.2em;
     }
 
-    .output-actions-bottom {
-        bottom: 10px; /* Keep consistent with padding */
+    .output-buttons-container {
+        bottom: 12px; 
         right: 12px;
         gap: 8px;
     }
@@ -994,22 +999,14 @@ body.dark-mode .theme-toggle-button:hover {
         font-size: 1em;
     }
 
-    .history-container {
-        padding: 15px;
-    }
-
     .history-panel-inner {
         padding: 15px;
-        max-height: 85vh; /* Maintain relative max-height */
-        border-radius: 12px;
     }
 
     .history-close-button {
-        top: 10px;
-        right: 10px;
-        width: 34px;
-        height: 34px;
-        font-size: 1.2em;
+        font-size: 1.2em; /* Smaller close button for small phones */
+        width: 30px;
+        height: 30px;
     }
 
     .history-header h2 {
@@ -1065,7 +1062,7 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .header {
-        gap: 6px; /* Smaller gap in header */
+        gap: 6px;
     }
 
     .header h1 {
@@ -1098,15 +1095,9 @@ body.dark-mode .theme-toggle-button:hover {
         right: 8px;
     }
 
-    .swap-button {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9em;
-    }
-
     .input-box,
     .output-box {
-        height: 140px; /* Adjusted height for 360px */
+        height: 140px;
         min-height: 140px;
         padding: 10px;
         gap: 6px;
@@ -1124,25 +1115,17 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .output-text-area {
-        top: 35px;
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
         padding-bottom: 40px; /* Keep space for buttons */
     }
 
-    .output-text-area .initial-message {
-        font-size: 0.8em;
-    }
-
-    .text-area-actions .action-button {
-        width: 28px; /* Adjusted size */
+    .action-button {
+        width: 28px; 
         height: 28px;
         font-size: 1em;
     }
 
-    .output-actions-bottom {
-        bottom: 10px; /* Adjusted position */
+    .output-buttons-container {
+        bottom: 10px; 
         right: 10px;
         gap: 6px;
     }
@@ -1161,22 +1144,16 @@ body.dark-mode .theme-toggle-button:hover {
         margin-top: 10px;
     }
 
-    .history-container {
-        padding: 10px;
-    }
-
     .history-panel-inner {
-        padding: 15px; /* Consistent padding */
-        max-height: 85vh; /* Keep relative height */
-        border-radius: 10px;
+        padding: 12px;
+        max-height: 80vh;
+        max-width: calc(100vw - 20px);
     }
 
     .history-close-button {
-        top: 8px;
-        right: 8px;
-        width: 30px;
-        height: 30px;
-        font-size: 1em;
+        font-size: 1em; /* Further reduce close button for tiny phones */
+        width: 28px;
+        height: 28px;
     }
 
     .history-header h2 {
@@ -1210,14 +1187,14 @@ body.dark-mode .theme-toggle-button:hover {
         right: 6px;
     }
     .dropdown-options {
-        max-height: 150px;
+        max-height: 120px;
     }
 }
 
 /* Ultra Small Mobile Devices (320px and below) */
 @media (max-width: 320px) {
     body {
-        padding: 5px; /* Minimal padding */
+        padding: 5px;
     }
 
     .main-container {
@@ -1271,15 +1248,9 @@ body.dark-mode .theme-toggle-button:hover {
         right: 6px;
     }
 
-    .swap-button {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9em;
-    }
-
     .input-box,
     .output-box {
-        height: 120px; /* Minimized height for 320px */
+        height: 120px;
         min-height: 120px;
         padding: 8px;
         gap: 4px;
@@ -1297,25 +1268,16 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .output-text-area {
-        top: 30px;
-        left: 8px;
-        right: 8px;
-        bottom: 8px;
         padding-bottom: 35px; /* Adjust padding for smaller buttons */
     }
 
-    .output-text-area .initial-message {
-        font-size: 0.8em;
-        width: calc(100% - 16px);
-    }
-
-    .text-area-actions .action-button {
+    .action-button {
         width: 24px;
         height: 24px;
         font-size: 1em;
     }
 
-    .output-actions-bottom {
+    .output-buttons-container {
         bottom: 8px;
         right: 8px;
         gap: 6px;
@@ -1335,29 +1297,16 @@ body.dark-mode .theme-toggle-button:hover {
         margin-top: 8px;
     }
 
-    .history-container {
-        padding: 8px;
-    }
-
     .history-panel-inner {
         padding: 12px;
         max-height: 75vh;
-        border-radius: 8px;
         max-width: calc(100vw - 16px);
     }
 
     .history-close-button {
-        top: 6px;
-        right: 6px;
+        font-size: 1em;
         width: 28px;
         height: 28px;
-        font-size: 0.9em;
-    }
-
-    .history-header {
-        padding-bottom: 6px;
-        margin-bottom: 6px;
-        padding-right: 30px; /* Make room for close button */
     }
 
     .history-header h2 {
@@ -1372,19 +1321,15 @@ body.dark-mode .theme-toggle-button:hover {
     .history-item {
         padding: 8px;
         margin-bottom: 4px;
-        border-radius: 8px;
     }
 
     .history-source {
         font-size: 0.8em;
-        margin-bottom: 4px;
     }
 
     .translation-item {
         font-size: 0.8em;
         padding-left: 6px;
-        margin-top: 3px;
-        border-left-width: 2px;
     }
 
     .delete-history-item {
@@ -1393,12 +1338,10 @@ body.dark-mode .theme-toggle-button:hover {
         height: 16px;
         top: 4px;
         right: 4px;
-        padding: 2px;
     }
 
     .dropdown-options {
         max-height: 120px;
-        border-radius: 8px;
     }
 
     .dropdown-option {
@@ -1416,79 +1359,83 @@ body.dark-mode .theme-toggle-button:hover {
 /* Landscape orientation adjustments for small screens (re-evaluated) */
 @media (max-width: 640px) and (orientation: landscape) {
     .main-container {
-        flex-direction: row; /* Try to keep side-by-side if enough width */
+        flex-direction: row;
         max-width: 90%;
         padding: 15px;
         gap: 15px;
     }
     .sub-container {
-        flex-direction: row; /* Keep main content side-by-side */
+        flex-direction: row;
         gap: 15px;
     }
     .translator-wrapper {
         width: auto;
         max-width: none;
-        flex: 1; /* Take available space */
+        flex: 1;
         gap: 10px;
     }
     .history-container {
-        /* On landscape, history can still be a fixed overlay, but adjust sizing */
+        /* Keep as fixed overlay in landscape */
         position: fixed; 
         top: 0; bottom: 0; left: 0; right: 0;
         padding: 10px;
         align-items: center;
         justify-content: center;
-        background-color: rgba(0,0,0,0.6); /* Slightly darker overlay */
+        background-color: rgba(0,0,0,0.6);
         z-index: 1000;
-        display: none; /* Still hidden by default */
+        display: none;
         opacity: 0;
+        pointer-events: none;
     }
     .history-container.show {
         display: flex;
         opacity: 1;
+        pointer-events: auto;
     }
     .history-panel-inner {
-        width: 80vw; /* Take more width in landscape */
-        max-width: 500px; /* But limit for larger screens */
-        height: auto; /* Content-driven height */
-        max-height: 85vh; /* Max height to fit screen */
+        width: 80vw;
+        max-width: 500px;
+        height: auto;
+        max-height: 85vh;
         padding: 15px;
         border-radius: 15px;
     }
     .text-input-output {
-        grid-template-columns: 1fr 1fr; /* Keep side-by-side */
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
         flex-grow: 1;
     }
     .input-box,
     .output-box {
-        height: 120px; /* Reduced height to fit landscape */
+        height: 120px;
         min-height: 120px;
         padding: 10px;
         gap: 6px;
     }
     .output-text-area {
         top: 35px;
-        padding-bottom: 35px; /* Adjust padding for smaller height */
+        padding-bottom: 35px;
     }
-    .text-area-actions .action-button {
+    .action-button {
         width: 28px; height: 28px; font-size: 1.1em;
     }
-    .output-actions-bottom {
+    .output-buttons-container {
         bottom: 8px; right: 8px; gap: 6px;
     }
     .language-select {
-        flex-direction: row; /* Try to keep side-by-side in landscape */
-        flex-wrap: wrap; /* Allow wrapping */
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: 8px;
     }
     .from-lang, .to-lang {
-        flex: 1; /* Distribute space */
-        min-width: 120px; /* Ensure a minimum width */
+        flex: 1;
+        min-width: 120px;
     }
+    /* Re-enable swap button for landscape if desired, otherwise it remains hidden */
     .swap-button {
-        transform: rotate(0deg); /* No rotation in landscape if side-by-side */
-        margin: 0 5px; /* Adjust margin */
+        display: none; /* Keep hidden, or set to 'block' if desired */
+        transform: rotate(0deg); 
+        margin: 0 5px;
         width: 40px; height: 40px;
     }
     .translate-button {
@@ -1496,7 +1443,7 @@ body.dark-mode .theme-toggle-button:hover {
         font-size: 0.9em;
     }
     .header {
-        flex-direction: row; /* Keep header elements in a row */
+        flex-direction: row;
         gap: 10px;
     }
 }
@@ -1504,7 +1451,7 @@ body.dark-mode .theme-toggle-button:hover {
 /* Very short screens (height-based media queries) */
 @media (max-height: 600px){
   .dropdown-options{
-      max-height: 120px; /* Further reduce for very short screens */              
+      max-height: 120px;             
   }
 
   .input-box,
@@ -1513,14 +1460,14 @@ body.dark-mode .theme-toggle-button:hover {
       min-height: 100px;
   }
   .history-panel-inner{
-      max-height: 80vh; /* Re-evaluate max height */
+      max-height: 80vh;
   }
 }
 
 @media (max-height: 500px){
     .input-box,
     .output-box {
-        height: 80px; /* Drastically reduce height for extremely short screens */
+        height: 80px;
         min-height: 80px;
         padding: 8px;
     }

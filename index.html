@@ -180,14 +180,14 @@
                             <div class="label-container">Result Text:</div>
                             <div id="result" class="output-text-area">
                                 <p class="initial-message">Translation will appear here</p>
-                                <div class="text-area-actions output-actions-bottom">
-                                    <button class="action-button copy-button" id="copyButton" onclick="copyTranslation()">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                    <button class="action-button history-button" id="historyToggleButton" onclick="toggleHistoryPanel()">
-                                        <i class="fas fa-history"></i>
-                                    </button>
-                                </div>
+                            </div>
+                            <div class="output-buttons-container">
+                                <button class="action-button copy-button" id="copyButton" onclick="copyTranslation()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <button class="action-button history-button" id="historyToggleButton" onclick="toggleHistoryPanel()">
+                                    <i class="fas fa-history"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -200,7 +200,11 @@
                 <div class="history-panel-inner">
                     <div class="history-header">
                         <h2>History</h2>
-                        <button class="clear-history-button" onclick="clearHistory()">Clear All</button>
+                        <div class="history-header-actions"> <button class="clear-history-button" onclick="clearHistory()">Clear All</button>
+                            <button class="action-button history-close-button" onclick="toggleHistoryPanel()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     <div id="history-list-container" class="history-list">
                         <p class="no-history">Your translation history will appear here.</p>

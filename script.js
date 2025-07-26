@@ -79,7 +79,7 @@ function updateCharCount() {
         charCountElement.classList.remove('char-limit-exceeded');
     }
 
-    const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+    // const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0; // Word count is not displayed
     charCountElement.textContent = `${charCount}/${CHAR_LIMIT}`; // Display as 0/50000
 }
 
@@ -150,6 +150,7 @@ function copyTranslation() {
   if (!resultDiv || !copyBtn) return;
 
   // Find the actual translation content within resultDiv
+  // The translation content is now within resultDiv's direct child, not necessarily output-text-area
   const translationContentDiv = resultDiv.querySelector('.translation-content');
   let textToCopy = '';
 
@@ -164,8 +165,11 @@ function copyTranslation() {
           .join('\n');
   } else {
       // Fallback for cases without .translation-content (e.g., error messages, initial message)
-      if (!resultDiv.querySelector('.initial-message') && !resultDiv.querySelector('.loading')) {
-          textToCopy = resultDiv.textContent.trim();
+      // Ensure we don't copy the initial message or loading message
+      const initialMessage = resultDiv.querySelector('.initial-message');
+      const loadingMessage = resultDiv.querySelector('.loading');
+      if (!initialMessage && !loadingMessage) {
+          textToCopy = resultDiv.textContent.trim(); // This might pick up labels, so translationContentDiv is better
       }
   }
   
@@ -297,10 +301,16 @@ function reuseTranslation(encodedSourceText, fromLang, encodedTranslations) {
       translationContentDiv.remove();
   }
 
+  // Get the output buttons container and temporarily detach it
+  const outputButtonsContainer = resultDiv.parentElement.querySelector('.output-buttons-container');
+  if (outputButtonsContainer) {
+      outputButtonsContainer.remove();
+  }
+
   if (Array.isArray(translations)) {
-      displayMultipleTranslations({ translations: translations }, translations.map(t => t.language), resultDiv, false);
+      displayMultipleTranslations({ translations: translations }, translations.map(t => t.language), resultDiv, false, outputButtonsContainer); // Pass outputButtonsContainer
   } else {
-      displaySingleTranslation({ translation: translations.text }, translations.language, resultDiv, false);
+      displaySingleTranslation({ translation: translations.text }, translations.language, resultDiv, false, outputButtonsContainer); // Pass outputButtonsContainer
   }
 
   // Hide history panel after reusing
@@ -418,16 +428,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const historyToggleButton = document.getElementById('historyToggleButton'); // Get history toggle button reference
     const languageCheckboxes = document.querySelectorAll('.language-checkbox-dropdown');
     const selectAllCheckbox = document.querySelector('.select-all-checkbox');
-    const historyCloseButton = document.createElement('button'); // Create the close button
-    historyCloseButton.className = 'history-close-button';
-    historyCloseButton.innerHTML = '<i class="fas fa-times"></i>';
-    historyCloseButton.onclick = function(event) {
-        event.stopPropagation(); // Prevent click from propagating to document
-        toggleHistoryPanel(); // Close the panel
-    };
-    if (historyPanel && historyPanel.querySelector('.history-panel-inner')) {
-        historyPanel.querySelector('.history-panel-inner').appendChild(historyCloseButton);
-    }
+    
+    // The historyCloseButton is now directly in HTML, no need to create it here
+    // But we still need to reference it for the click outside listener
+    const historyCloseButton = document.querySelector('.history-close-button');
 
 
     // Add event listener to close dropdowns and history panel when clicking outside
@@ -439,11 +443,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Close history panel if clicked outside
-        // Ensure click is not on the history panel itself or the history toggle button
+        // Ensure click is not on the history panel itself or the history toggle button or the history close button
         if (historyPanel && historyPanel.classList.contains('show') && 
             !historyPanel.contains(event.target) && 
             !historyToggleButton.contains(event.target) &&
-            !historyCloseButton.contains(event.target)) { // Also check if click is not on the new close button
+            (historyCloseButton && !historyCloseButton.contains(event.target))) { // Check if historyCloseButton exists before using it
             
             historyPanel.classList.remove('show');
         }
@@ -481,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Set initial selected language as "Spanish" if none are checked, as per image
             if (checkedBoxes.length === 0) {
-                selectedSpan.textContent = 'Spanish'; 
+                selectedSpan.textContent = 'Spanish';
             } else if (checkedBoxes.length === 1) {
                 const language = checkedBoxes[0].nextElementSibling.textContent;
                 selectedSpan.textContent = language;
@@ -518,18 +522,19 @@ async function translateText() {
   const resultDiv = document.getElementById("result");
   const fromLanguage = document.getElementById("fromLanguage").value;
 
-  // Preserve the buttons overlay div
-  const outputActionsBottom = resultDiv.querySelector('.output-actions-bottom');
-  if (outputActionsBottom) {
-      outputActionsBottom.remove(); // Temporarily detach
+  // Get the output buttons container and temporarily detach it before clearing resultDiv
+  // This ensures the buttons are preserved and re-appended
+  const outputButtonsContainer = resultDiv.parentElement.querySelector('.output-buttons-container');
+  if (outputButtonsContainer) {
+      outputButtonsContainer.remove(); // Temporarily detach
   }
 
-  // Clear existing content in resultDiv
-  resultDiv.innerHTML = ''; 
+  // Clear existing content in resultDiv (but not the parent output-box)
+  resultDiv.innerHTML = '';
 
   if (!text.trim()) {
     resultDiv.innerHTML = "<p style='color: red;'>Please enter some text to translate.</p>";
-    if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+    if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons to output-box
     return;
   }
 
@@ -543,13 +548,13 @@ async function translateText() {
 
   if (selectedLanguages.length === 0) {
     resultDiv.innerHTML = "<p style='color: red;'>Please select at least one target language.</p>";
-    if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+    if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons
     return;
   }
 
   // Handle multiple languages selection
   if (selectedLanguages.length > 1) {
-    await translateToMultipleLanguages(text, fromLanguage, selectedLanguages, resultDiv, outputActionsBottom);
+    await translateToMultipleLanguages(text, fromLanguage, selectedLanguages, resultDiv, outputButtonsContainer); // Pass outputButtonsContainer
     return;
   }
 
@@ -557,14 +562,14 @@ async function translateText() {
   const toLanguage = selectedLanguages[0];
   if (fromLanguage === toLanguage) { // Removed auto-detect check as it's no longer an option
     resultDiv.innerHTML = "<p style='color: orange;'>Source and target languages are the same.</p>";
-    if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+    if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons
     return;
   }
 
-  await translateToSingleLanguage(text, fromLanguage, toLanguage, resultDiv, outputActionsBottom);
+  await translateToSingleLanguage(text, fromLanguage, toLanguage, resultDiv, outputButtonsContainer); // Pass outputButtonsContainer
 }
 
-async function translateToSingleLanguage(text, fromLanguage, toLanguage, resultDiv, outputActionsBottom) {
+async function translateToSingleLanguage(text, fromLanguage, toLanguage, resultDiv, outputButtonsContainer) {
   try {
     // Show loading message
     const loadingMessage = document.createElement('p');
@@ -573,9 +578,9 @@ async function translateToSingleLanguage(text, fromLanguage, toLanguage, resultD
     resultDiv.innerHTML = ''; // Clear previous content
     resultDiv.appendChild(loadingMessage); // Add loading message
 
-    // Re-append buttons
-    if (outputActionsBottom) {
-        resultDiv.appendChild(outputActionsBottom);
+    // Re-append buttons to the parent output-box, after the loading message is added to resultDiv
+    if (outputButtonsContainer) {
+        resultDiv.parentElement.appendChild(outputButtonsContainer);
     }
 
 
@@ -604,22 +609,22 @@ async function translateToSingleLanguage(text, fromLanguage, toLanguage, resultD
     if (!res.ok) {
       const errorData = await res.json();
       resultDiv.innerHTML = `<p style='color: red;'>Error: ${errorData.error || 'Translation failed'}</p>`;
-      if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+      if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons
       console.error("Server error:", errorData);
       return;
     }
 
     const data = await res.json();
-    displaySingleTranslation(data, toLanguage, resultDiv, true, outputActionsBottom); // Pass outputActionsBottom
+    displaySingleTranslation(data, toLanguage, resultDiv, true, outputButtonsContainer); // Pass outputButtonsContainer
 
   } catch (error) {
     console.error("Client error:", error);
     resultDiv.innerHTML = "<p style='color: red;'>Error: Unable to connect to translation service. Make sure the server is running.</p>";
-    if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+    if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons
   }
 }
 
-async function translateToMultipleLanguages(text, fromLanguage, selectedLanguages, resultDiv, outputActionsBottom) {
+async function translateToMultipleLanguages(text, fromLanguage, selectedLanguages, resultDiv, outputButtonsContainer) {
   try {
     // Show loading message
     const loadingMessage = document.createElement('p');
@@ -628,9 +633,9 @@ async function translateToMultipleLanguages(text, fromLanguage, selectedLanguage
     resultDiv.innerHTML = ''; // Clear previous content
     resultDiv.appendChild(loadingMessage); // Add loading message
 
-    // Re-append buttons
-    if (outputActionsBottom) {
-        resultDiv.appendChild(outputActionsBottom);
+    // Re-append buttons to the parent output-box, after the loading message is added to resultDiv
+    if (outputButtonsContainer) {
+        resultDiv.parentElement.appendChild(outputButtonsContainer);
     }
 
 
@@ -659,28 +664,28 @@ async function translateToMultipleLanguages(text, fromLanguage, selectedLanguage
     if (!res.ok) {
       const errorData = await res.json();
       resultDiv.innerHTML = `<p style='color: red;'>Error: ${errorData.error || 'Translation failed'}</p>`;
-      if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+      if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons
       console.error("Server error:", errorData);
       return;
     }
 
     const data = await res.json();
-    displayMultipleTranslations(data, selectedLanguages, resultDiv, true, outputActionsBottom); // Pass outputActionsBottom
+    displayMultipleTranslations(data, selectedLanguages, resultDiv, true, outputButtonsContainer); // Pass outputButtonsContainer
 
   } catch (error) {
     console.error("Client error:", error);
     resultDiv.innerHTML = "<p style='color: red;'>Error: Unable to connect to translation service. Make sure the server is running.</p>";
-    if (outputActionsBottom) resultDiv.appendChild(outputActionsBottom); // Re-append buttons
+    if (outputButtonsContainer) resultDiv.parentElement.appendChild(outputButtonsContainer); // Re-append buttons
   }
 }
 
-function displaySingleTranslation(data, targetLanguage, resultDiv, addToHistoryFlag = false, outputActionsBottom = null) {
+function displaySingleTranslation(data, targetLanguage, resultDiv, addToHistoryFlag = false, outputButtonsContainer = null) {
   // Clear previous content
-  resultDiv.innerHTML = ''; 
+  resultDiv.innerHTML = '';
 
   // Create content div
   const translationContentDiv = document.createElement('div');
-  translationContentDiv.className = 'translation-content'; 
+  translationContentDiv.className = 'translation-content';
   resultDiv.appendChild(translationContentDiv); // Add content div to resultDiv
 
   // Handle single language response
@@ -707,19 +712,19 @@ function displaySingleTranslation(data, targetLanguage, resultDiv, addToHistoryF
     translationContentDiv.innerHTML = "<p style='color: red;'>Unexpected response format from server.</p>";
   }
 
-  // Re-append buttons last
-  if (outputActionsBottom) {
-      resultDiv.appendChild(outputActionsBottom);
+  // Re-append buttons to the parent output-box (which contains resultDiv)
+  if (outputButtonsContainer) {
+      resultDiv.parentElement.appendChild(outputButtonsContainer);
   }
 }
 
-function displayMultipleTranslations(data, selectedLanguages, resultDiv, addToHistoryFlag = false, outputActionsBottom = null) {
+function displayMultipleTranslations(data, selectedLanguages, resultDiv, addToHistoryFlag = false, outputButtonsContainer = null) {
   // Clear previous content
   resultDiv.innerHTML = '';
 
   // Create content div
   const translationContentDiv = document.createElement('div');
-  translationContentDiv.className = 'translation-content'; 
+  translationContentDiv.className = 'translation-content';
   resultDiv.appendChild(translationContentDiv); // Add content div to resultDiv
 
   // Handle multiple language response
@@ -764,8 +769,8 @@ function displayMultipleTranslations(data, selectedLanguages, resultDiv, addToHi
     translationContentDiv.innerHTML = "<p style='color: red;'>Unexpected response format from server.</p>";
   }
 
-  // Re-append buttons last
-  if (outputActionsBottom) {
-      resultDiv.appendChild(outputActionsBottom);
+  // Re-append buttons to the parent output-box (which contains resultDiv)
+  if (outputButtonsContainer) {
+      resultDiv.parentElement.appendChild(outputButtonsContainer);
   }
 }
