@@ -435,7 +435,7 @@ body.dark-mode .theme-toggle-button:hover {
 /* NEW: Container for output box action buttons (copy and history) */
 .output-buttons-container {
     position: absolute; /* Position relative to .output-box */
-    bottom: 15px; /* Align to the bottom of output-box */
+    bottom: 10px; /* Align to the bottom of output-box */
     right: 15px; /* Align to the right of output-box */
     display: flex;
     gap: 10px; /* Space between the buttons */
@@ -1053,8 +1053,8 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .logo {
-        height: 28px;
-        width: 28px;
+        height: 30px;
+        width: 30px;
     }
 
     .logo-container {
@@ -1204,8 +1204,8 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .logo {
-        height: 28px;
-        width: 28px;
+        height: 30px;
+        width: 30px;
     }
 
     .logo-container {
@@ -1272,8 +1272,8 @@ body.dark-mode .theme-toggle-button:hover {
     }
 
     .action-button {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         font-size: 1em;
     }
 
