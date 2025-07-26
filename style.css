@@ -872,7 +872,7 @@ body.dark-mode .theme-toggle-button:hover {
    display: grid;
     grid-template-columns: 1fr;
     grid-template-areas:
-      "lang"         /* ⬅︎ 新增 */
+      "lang"        
       "input"
       "translate"
       "output";
@@ -888,6 +888,22 @@ body.dark-mode .theme-toggle-button:hover {
        display: contents;                      
 }
 
+  .output-box {
+    margin-bottom: 52px;      
+  }
+
+  
+  .output-buttons-container {
+    position: absolute;      
+    top: 100%;               
+    right: 0;                 
+    transform: translateY(12px);  
+  }
+
+  
+  .output-text-area {
+    padding-bottom: 15px;
+  }
 
 
     /* output-buttons-container is now always relative to output-box */
@@ -1503,7 +1519,7 @@ body.dark-mode .theme-toggle-button:hover {
   .output-buttons-container{
     position: absolute;          
     top: 100%;                    
-    transform: translateY(10px);  
+    transform: translateY(20px);  
   }
 
   .output-text-area{
