@@ -1493,3 +1493,16 @@ body.dark-mode .theme-toggle-button:hover {
         font-size: 0.8em;
     }
 }
+@media (min-width: 1025px) {
+
+  
+  .output-box {
+    margin-bottom: 48px;          
+  }
+
+ 
+  .output-buttons-container {
+    bottom: -38px;               
+    right: 0;                    
+  }
+}
