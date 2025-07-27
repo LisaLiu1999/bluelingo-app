@@ -34,8 +34,7 @@ function initializeTheme() {
     const savedTheme = localStorage.getItem('darkMode');
     if (savedTheme !== null) {
         isDarkMode = JSON.parse(savedTheme);
-    }
-    
+    }    
     updateThemeUI();
 }
 
@@ -78,8 +77,6 @@ function updateCharCount() {
     } else {
         charCountElement.classList.remove('char-limit-exceeded');
     }
-
-    // const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0; // Word count is not displayed
     charCountElement.textContent = `${charCount}/${CHAR_LIMIT}`; // Display as 0/50000
 }
 
@@ -189,7 +186,6 @@ function copyTranslation() {
     }, 2000);
   }).catch(err => {
     console.error('Failed to copy text (clipboard API)', err);
-    // Fallback for older browsers (simplified, no alert)
     const textArea = document.createElement('textarea');
     textArea.value = textToCopy;
     document.body.appendChild(textArea);
@@ -287,7 +283,13 @@ function reuseTranslation(encodedSourceText, fromLang, encodedTranslations) {
   const translations = JSON.parse(decodeURIComponent(encodedTranslations));
 
   document.getElementById('source').value = sourceText;
-  document.getElementById('fromLanguage').value = fromLang;
+  // Set the custom dropdown for source language
+  const fromLangDropdownSelected = document.getElementById('fromLangDropdownSelected');
+  if (fromLangDropdownSelected) {
+    // Find the language name from languageNames
+    const langName = languageNames[fromLang] || fromLang;
+    fromLangDropdownSelected.querySelector('span').textContent = langName;
+  }
 
   const resultDiv = document.getElementById('result');
   
@@ -320,93 +322,46 @@ function reuseTranslation(encodedSourceText, fromLang, encodedTranslations) {
   }
 }
 
-// Swap languages function
-function swapLanguages() {
-    const fromLanguageSelect = document.getElementById('fromLanguage');
-    const dropdownSelectedSpan = document.getElementById('dropdownSelected').querySelector('span:first-child');
-    const languageCheckboxes = document.querySelectorAll('.language-checkbox-dropdown');
-
-    const sourceTextarea = document.getElementById('source');
-    const resultDiv = document.getElementById('result');
-
-    // Get currently selected target languages from checkboxes
-    const selectedTargetLangs = Array.from(languageCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-
-    // Only swap if one target language is selected, otherwise it gets complicated
-    if (selectedTargetLangs.length !== 1) {
-        alert('Please select exactly one target language to swap.');
-        return;
-    }
-
-    const currentFromLang = fromLanguageSelect.value;
-    const currentToLang = selectedTargetLangs[0];
-
-    // Don't swap if source or target languages are the same
-    if (currentFromLang === currentToLang) {
-        return;
-    }
-
-    // Perform the swap in the UI
-    fromLanguageSelect.value = currentToLang;
-    
-    // Uncheck all target language checkboxes first
-    languageCheckboxes.forEach(cb => cb.checked = false);
-    
-    // Check the new target language (which was the original source language)
-    const newTargetLangCheckbox = document.querySelector(`.language-checkbox-dropdown[value="${currentFromLang}"]`);
-    if (newTargetLangCheckbox) {
-        newTargetLangCheckbox.checked = true;
-    }
-
-    // Update the dropdown display text
-    updateDropdownDisplay();
-    updateSelectAllState();
-
-    // Optionally swap text content if a translation is present
-    const translationContentDiv = resultDiv.querySelector('.translation-content');
-    if (sourceTextarea.value.trim() && translationContentDiv && translationContentDiv.textContent.trim()) {
-        const originalSourceText = sourceTextarea.value;
-        const translatedText = translationContentDiv.textContent.trim(); // Get the current translated text
-
-        sourceTextarea.value = translatedText; // Translated text becomes new source
-        // No need to clear resultDiv.innerHTML directly, display functions will handle it
-        
-        // You might want to automatically translate the swapped text here
-        // translateText(); // Uncomment if you want immediate re-translation
-    }
-}
-
-
-// Share translation function (placeholder)
-function shareTranslation() {
-    alert('Share functionality will be implemented here!');
-    // Example: Use Web Share API
-    // if (navigator.share) {
-    //   navigator.share({
-    //     title: 'My Translation',
-    //     text: 'Check out this translation: ' + document.getElementById('result').textContent,
-    //     url: window.location.href,
-    //   })
-    //   .then(() => console.log('Successful share'))
-    //   .catch((error) => console.log('Error sharing', error));
-    // } else {
-    //   alert('Web Share API is not supported in your browser.');
-    // }
-}
-
-
 // DOMContentLoaded event listener
 document.addEventListener('DOMContentLoaded', function () {
     initializeTheme(); // Initialize theme
 
     loadTranslationHistory(); // Load and display history
 
-    // Set default selected language for fromLanguage dropdown
-    const fromLanguageSelect = document.getElementById('fromLanguage');
-    if (fromLanguageSelect) {
-        fromLanguageSelect.value = 'en'; // Ensure English is selected by default
+    // --- Custom Dropdown for Source Language (from-lang) ---
+    const fromLangDropdown = document.getElementById('fromLangDropdown');
+    const fromLangDropdownSelected = document.getElementById('fromLangDropdownSelected');
+    const fromLangDropdownOptions = document.getElementById('fromLangDropdownOptions');
+    let fromLangSelectedValue = 'en';
+
+    if (fromLangDropdown && fromLangDropdownSelected && fromLangDropdownOptions) {
+        // Open/close dropdown
+        fromLangDropdownSelected.addEventListener('click', function (event) {
+            event.stopPropagation();
+            fromLangDropdown.classList.toggle('open');
+            fromLangDropdownOptions.classList.toggle('show');
+        });
+
+        // Handle option click
+        const options = fromLangDropdownOptions.querySelectorAll('.dropdown-option');
+        options.forEach(option => {
+            option.addEventListener('click', function (e) {
+                const value = this.getAttribute('data-value');
+                const text = this.textContent;
+                fromLangSelectedValue = value;
+                fromLangDropdownSelected.querySelector('span').textContent = text;
+                fromLangDropdown.classList.remove('open');
+                fromLangDropdownOptions.classList.remove('show');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!fromLangDropdown.contains(event.target)) {
+                fromLangDropdown.classList.remove('open');
+                fromLangDropdownOptions.classList.remove('show');
+            }
+        });
     }
 
 
@@ -520,7 +475,41 @@ document.addEventListener('DOMContentLoaded', function () {
 async function translateText() {
   const text = document.getElementById("source").value;
   const resultDiv = document.getElementById("result");
-  const fromLanguage = document.getElementById("fromLanguage").value;
+  // Use the selected value from the custom from-lang dropdown
+  let fromLanguage = 'en';
+  const fromLangDropdownSelected = document.getElementById('fromLangDropdownSelected');
+  if (fromLangDropdownSelected) {
+    // Find the selected value by matching the text
+    const selectedText = fromLangDropdownSelected.querySelector('span').textContent;
+    const options = [
+      { value: 'en', text: 'English' },
+      { value: 'fil', text: 'Filipino' },
+      { value: 'es', text: 'Spanish' },
+      { value: 'pt', text: 'Portuguese' },
+      { value: 'fr', text: 'French' },
+      { value: 'de', text: 'German' },
+      { value: 'hi', text: 'Hindi' },
+      { value: 'ja', text: 'Japanese' },
+      { value: 'ko', text: 'Korean' },
+      { value: 'pa', text: 'Punjabi' },
+      { value: 'ru', text: 'Russian' },
+      { value: 'th', text: 'Thai' },
+      { value: 'vi', text: 'Vietnamese' },
+      { value: 'ar', text: 'Arabic' },
+      { value: 'it', text: 'Italian' },
+      { value: 'nl', text: 'Dutch' },
+      { value: 'sv', text: 'Swedish' },
+      { value: 'da', text: 'Danish' },
+      { value: 'no', text: 'Norwegian' },
+      { value: 'pl', text: 'Polish' },
+      { value: 'tr', text: 'Turkish' },
+      { value: 'he', text: 'Hebrew' },
+      { value: 'cs', text: 'Czech' },
+      { value: 'hu', text: 'Hungarian' }
+    ];
+    const found = options.find(opt => opt.text === selectedText);
+    if (found) fromLanguage = found.value;
+  }
 
   // Get the output buttons container and temporarily detach it before clearing resultDiv
   // This ensures the buttons are preserved and re-appended
@@ -583,15 +572,7 @@ async function translateToSingleLanguage(text, fromLanguage, toLanguage, resultD
         resultDiv.parentElement.appendChild(outputButtonsContainer);
     }
 
-
-    // Automatically detect environment and use appropriate URL
-    const isLocalhost = window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname === '';
-
-    const API_URL = isLocalhost
-      ? "http://localhost:3000/translate"
-      : "https://backend-translator-9m88.onrender.com/translate";
+    const API_URL = "https://backend-translator-9m88.onrender.com/translate"; 
 
     // Prepare request body
     const requestBody = {
@@ -638,15 +619,7 @@ async function translateToMultipleLanguages(text, fromLanguage, selectedLanguage
         resultDiv.parentElement.appendChild(outputButtonsContainer);
     }
 
-
-    // Automatically detect environment and use appropriate URL
-    const isLocalhost = window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname === '';
-
-    const API_URL = isLocalhost
-      ? "http://localhost:3000/translate"
-      : "https://backend-translator-9m88.onrender.com/translate";
+    const API_URL = "https://backend-translator-9m88.onrender.com/translate"; 
 
     // Prepare request body
     const requestBody = {
@@ -700,7 +673,40 @@ function displaySingleTranslation(data, targetLanguage, resultDiv, addToHistoryF
 
     if (addToHistoryFlag) {
         const sourceText = document.getElementById("source").value;
-        const fromLanguage = document.getElementById("fromLanguage").value;
+        // Use custom dropdown for fromLanguage
+        let fromLanguage = 'en';
+        const fromLangDropdownSelected = document.getElementById('fromLangDropdownSelected');
+        if (fromLangDropdownSelected) {
+          const selectedText = fromLangDropdownSelected.querySelector('span').textContent;
+          const options = [
+            { value: 'en', text: 'English' },
+            { value: 'fil', text: 'Filipino' },
+            { value: 'es', text: 'Spanish' },
+            { value: 'pt', text: 'Portuguese' },
+            { value: 'fr', text: 'French' },
+            { value: 'de', text: 'German' },
+            { value: 'hi', text: 'Hindi' },
+            { value: 'ja', text: 'Japanese' },
+            { value: 'ko', text: 'Korean' },
+            { value: 'pa', text: 'Punjabi' },
+            { value: 'ru', text: 'Russian' },
+            { value: 'th', text: 'Thai' },
+            { value: 'vi', text: 'Vietnamese' },
+            { value: 'ar', text: 'Arabic' },
+            { value: 'it', text: 'Italian' },
+            { value: 'nl', text: 'Dutch' },
+            { value: 'sv', text: 'Swedish' },
+            { value: 'da', text: 'Danish' },
+            { value: 'no', text: 'Norwegian' },
+            { value: 'pl', text: 'Polish' },
+            { value: 'tr', text: 'Turkish' },
+            { value: 'he', text: 'Hebrew' },
+            { value: 'cs', text: 'Czech' },
+            { value: 'hu', text: 'Hungarian' }
+          ];
+          const found = options.find(opt => opt.text === selectedText);
+          if (found) fromLanguage = found.value;
+        }
         const translations = [{
           language: targetLanguage,
           text: data.translation
@@ -743,7 +749,40 @@ function displayMultipleTranslations(data, selectedLanguages, resultDiv, addToHi
 
     if (addToHistoryFlag) {
         const sourceText = document.getElementById("source").value;
-        const fromLanguage = document.getElementById("fromLanguage").value;
+        // Use custom dropdown for fromLanguage
+        let fromLanguage = 'en';
+        const fromLangDropdownSelected = document.getElementById('fromLangDropdownSelected');
+        if (fromLangDropdownSelected) {
+          const selectedText = fromLangDropdownSelected.querySelector('span').textContent;
+          const options = [
+            { value: 'en', text: 'English' },
+            { value: 'fil', text: 'Filipino' },
+            { value: 'es', text: 'Spanish' },
+            { value: 'pt', text: 'Portuguese' },
+            { value: 'fr', text: 'French' },
+            { value: 'de', text: 'German' },
+            { value: 'hi', text: 'Hindi' },
+            { value: 'ja', text: 'Japanese' },
+            { value: 'ko', text: 'Korean' },
+            { value: 'pa', text: 'Punjabi' },
+            { value: 'ru', text: 'Russian' },
+            { value: 'th', text: 'Thai' },
+            { value: 'vi', text: 'Vietnamese' },
+            { value: 'ar', text: 'Arabic' },
+            { value: 'it', text: 'Italian' },
+            { value: 'nl', text: 'Dutch' },
+            { value: 'sv', text: 'Swedish' },
+            { value: 'da', text: 'Danish' },
+            { value: 'no', text: 'Norwegian' },
+            { value: 'pl', text: 'Polish' },
+            { value: 'tr', text: 'Turkish' },
+            { value: 'he', text: 'Hebrew' },
+            { value: 'cs', text: 'Czech' },
+            { value: 'hu', text: 'Hungarian' }
+          ];
+          const found = options.find(opt => opt.text === selectedText);
+          if (found) fromLanguage = found.value;
+        }
         addToHistory(sourceText, fromLanguage, data.translations);
     }
   } else if (data.translation && selectedLanguages.length === 1) { // Handle single language response (backward compatibility from old backend)
@@ -757,7 +796,40 @@ function displayMultipleTranslations(data, selectedLanguages, resultDiv, addToHi
 
     if (addToHistoryFlag) {
         const sourceText = document.getElementById("source").value;
-        const fromLanguage = document.getElementById("fromLanguage").value;
+        // Use custom dropdown for fromLanguage
+        let fromLanguage = 'en';
+        const fromLangDropdownSelected = document.getElementById('fromLangDropdownSelected');
+        if (fromLangDropdownSelected) {
+          const selectedText = fromLangDropdownSelected.querySelector('span').textContent;
+          const options = [
+            { value: 'en', text: 'English' },
+            { value: 'fil', text: 'Filipino' },
+            { value: 'es', text: 'Spanish' },
+            { value: 'pt', text: 'Portuguese' },
+            { value: 'fr', text: 'French' },
+            { value: 'de', text: 'German' },
+            { value: 'hi', text: 'Hindi' },
+            { value: 'ja', text: 'Japanese' },
+            { value: 'ko', text: 'Korean' },
+            { value: 'pa', text: 'Punjabi' },
+            { value: 'ru', text: 'Russian' },
+            { value: 'th', text: 'Thai' },
+            { value: 'vi', text: 'Vietnamese' },
+            { value: 'ar', text: 'Arabic' },
+            { value: 'it', text: 'Italian' },
+            { value: 'nl', text: 'Dutch' },
+            { value: 'sv', text: 'Swedish' },
+            { value: 'da', text: 'Danish' },
+            { value: 'no', text: 'Norwegian' },
+            { value: 'pl', text: 'Polish' },
+            { value: 'tr', text: 'Turkish' },
+            { value: 'he', text: 'Hebrew' },
+            { value: 'cs', text: 'Czech' },
+            { value: 'hu', text: 'Hungarian' }
+          ];
+          const found = options.find(opt => opt.text === selectedText);
+          if (found) fromLanguage = found.value;
+        }
         const translations = [{
           language: selectedLanguages[0],
           text: data.translation

@@ -1,3 +1,16 @@
+/* Ensure the from-lang .language-dropdown select has a fixed height and the open menu is scrollable */
+
+
+.from-lang .language-dropdown option {
+    font-size: 1.1em;
+}
+/* --- TRANSLATE BUTTON RESPONSIVE LOGIC --- */
+/* By default, both translate button containers are hidden. */
+/* Only one is shown at a time, depending on screen size. */
+.translate-btn-between,
+.translate-btn-bottom {
+    display: none;
+}
 /* 1. Root Variables (Light & Dark Mode)*/
 :root {
     --primary-bg: #e3effe;
@@ -16,9 +29,9 @@ body.dark-mode {
     --primary-bg: #121a26;
     --secondary-bg: #1a2333;
     --widget-bg: #1a2333;
-    --text-color: #f5f8fc;
+    --text-color: #ffffff;
     --primary-accent: #D06822;
-    --secondary-accent: #3a3b3c;
+    --secondary-accent: #2b3e5a;
     --border-color: #2a3b57;
     --header-text: #e3effe;
     --icon-color: #ced4da;
@@ -40,25 +53,18 @@ body {
 }
 
 .main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;    
     background-color: var(--widget-bg);
     border-radius: 15px;
     padding: 20px;
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    width: 70%;
+    min-width: 900px;
+    min-height: 530px;
     box-sizing: border-box;
     transition: background-color 0.3s ease;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.sub-container {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    width: 100%;
-    align-items: flex-start;
 }
 
 .translator-wrapper {
@@ -75,13 +81,36 @@ body {
     flex-grow: 1;
 }
 
+
+/* Default: Desktop (1920px and up) */
 .text-input-output {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* display: grid; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     gap: 20px;
-    flex-grow: 1;
-    grid-template-areas: unset; /* Ensure mobile grid areas are reset for desktop */
+    width: 100%;
+
+    /* grid-template-columns: 1fr 1fr; */
+    /* gap: 20px; */
+    /* flex-grow: 1; */
 }
+
+.input-box, .output-box {
+    width: 100%;
+}
+
+.translate-btn-bottom {
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Hide both translate button containers by default */
+.translate-btn-between {
+    display: none;
+}
+
 
 /* 3. Component Styles */
 .header {
@@ -154,6 +183,12 @@ body {
     transition: transform 0.5s ease-in-out;
 }
 
+body.dark-mode #fromLanguage.language-dropdown {
+    color: var(--text-color);
+    background-color: var(--secondary-bg);
+    border-color: var(--border-color);
+}
+
 body.dark-mode .theme-toggle-button i {
     transform: rotate(360deg);
 }
@@ -180,17 +215,22 @@ body.dark-mode .theme-toggle-button:hover {
     gap: 15px;
 }
 
+/* Custom height for the from-language dropdown for better visual consistency */
 .from-lang {
     flex: 1; 
+    font-weight: 400;    
     position: relative;
     background-color: var(--secondary-bg);
     border-radius: 10px;
     border: 1px solid var(--border-color);
+    height: 48px;  
+    min-height: 40px;
+    max-height: 56px;
 }
 
 .to-lang { 
     flex: 1;
-    font-weight: 700;
+    font-weight: 400;
     position: relative;
     background-color: var(--secondary-bg);
     border-radius: 10px;
@@ -203,13 +243,17 @@ body.dark-mode .theme-toggle-button:hover {
     border: none;
     background-color: transparent;
     color: var(--text-color);
-    font-size: 1.1em;
-    font-weight: 500;
+    font-size: 1.2rem;
+    font-weight: 400;
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
     transition: all 0.3s ease;
+    /* Set the dropdown menu (open options) height to 233px */
+    /* This works for most browsers except native Windows select. For full control, use a custom dropdown. */
+    /* max-height: 233px; */
+    /* overflow-y: auto; */
 }
 
 .language-select select:focus {
@@ -233,22 +277,23 @@ body.dark-mode .theme-toggle-button:hover {
     flex: 1;
     position: relative;
     width: 100%;
+    color: black;
 }
 
 .dropdown-selected {
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
+    background-color: transparent; /* Match original select background */
+    border: none; /* Match original select border */
     border-radius: 10px;
     padding: 12px 15px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.1em;
-    min-height: auto;
+    font-size: 1.2em;
+    max-height: 233px;
     width: 100%;
     box-sizing: border-box;
-    color: var(--text-color);
+    color: var(--text-color); /* Match original select color */
     font-family: 'Montserrat', sans-serif;
     transition: all 0.3s ease;
 }
@@ -263,10 +308,11 @@ body.dark-mode .theme-toggle-button:hover {
     top: calc(100% + 5px);
     left: 0;
     right: 0;
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--secondary-bg); /* Match original select dropdown background */
+    color: var(--text-color);
+    border: 1px solid var(--border-color); /* Match original select dropdown border */
     border-radius: 10px;
-    max-height: 200px;
+    max-height: 233px;
     overflow-y: auto;
     z-index: 1000;
     display: none;
@@ -295,12 +341,28 @@ body.dark-mode .theme-toggle-button:hover {
     align-items: center;
     padding: 10px 15px;
     cursor: pointer;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 1em;
-    color: var(--text-color);
-    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
     transition: background-color 0.2s ease;
 }
+
+/* Custom height for language dropdown for better usability and visual consistency */
+/* .language-dropdown { */
+    /* position: absolute; */
+    /* top: calc(100% + 5px);
+    left: 0;
+    right: 0; */
+    /* background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px; */
+    /* max-height: 233px;
+    overflow-y: auto; */
+    /* z-index: 1000;
+    display: flex;
+    width: 100%; */
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); */
+/* } */
+
+
 
 .dropdown-option:last-child {
     border-bottom: none;
@@ -308,6 +370,11 @@ body.dark-mode .theme-toggle-button:hover {
 
 .dropdown-option:hover {
     background-color: var(--secondary-accent);
+}
+
+body.dark-mode .dropdown-option:hover {
+    background-color: #2a3b57; /* Use a distinct dark accent for hover in dark mode */
+    color: #fff;
 }
 
 .dropdown-option input[type="checkbox"] {
@@ -330,7 +397,6 @@ body.dark-mode .theme-toggle-button:hover {
     box-sizing: border-box;
     position: relative; /* Keep this to allow absolute positioning of children */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    grid-area: unset; /* Ensure mobile grid area is reset for desktop */
 }
 
 .input-box:focus-within,
@@ -350,7 +416,7 @@ body.dark-mode .theme-toggle-button:hover {
     flex-grow: 1;
     resize: none;
     background-color: transparent;
-    color: var(--text-color);
+    color: var(--text-color); /* Match original select option color */
     font-size: 1.1em;
     outline: none;
     overflow-y: auto;
@@ -375,13 +441,13 @@ body.dark-mode .theme-toggle-button:hover {
     outline: none;
     overflow-y: auto;
     box-sizing: border-box;
-    padding-right: 5px;
+    padding-right: 60px; /* Increased to prevent overlap with buttons and scrollbar */
     position: absolute;
     top: 40px;
     left: 15px;
     right: 15px;
-    bottom: 15px; /* Base for positioning output-buttons-container relative to output-box */
-    padding-bottom: 45px; /* Increased padding to make space for buttons */
+    bottom: 50px;
+    padding-bottom: 10px; /* Increased padding to make space for buttons */
 }
 
 .output-text-area .initial-message {
@@ -434,7 +500,7 @@ body.dark-mode .theme-toggle-button:hover {
     width: 100%;
 }
 
-/* NEW: Container for output box action buttons (copy and history) */
+/* Container for output box action buttons (copy and history) */
 .output-buttons-container {
     position: absolute; /* Position relative to .output-box */
     bottom: 10px; /* Align to the bottom of output-box */
@@ -442,6 +508,10 @@ body.dark-mode .theme-toggle-button:hover {
     display: flex;
     gap: 10px; /* Space between the buttons */
     z-index: 5; /* Ensure buttons are above text area if needed */
+    background: var(--secondary-bg);
+    padding-left: 8px;
+    padding-right: 0;
+    /* Add a little left padding to ensure buttons don't overlap scrollbar */
 }
 
 
@@ -473,7 +543,6 @@ body.dark-mode .theme-toggle-button:hover {
 .translate-button-container {
     display: flex;
     justify-content: center;
-    grid-area: unset; /* Ensure mobile grid area is reset for desktop */
 }
 
 .translate-button {
@@ -678,9 +747,10 @@ body.dark-mode .theme-toggle-button:hover {
     margin: 0;
     font-size: 1em;
     word-wrap: break-word;
-    padding-left: 10px;
+    padding-left: 20px;
     border-left: 3px solid var(--secondary-accent);
     margin-top: 5px;
+    margin-left: 30px;
     color: var(--text-color);
 }
 
@@ -689,7 +759,8 @@ body.dark-mode .theme-toggle-button:hover {
     border-radius: 10px;
     border: 1px solid var(--border-color);
     margin-bottom: 15px;
-    padding: 15px;
+    margin-right: 20px;
+    padding: 20px;
     transition: all 0.3s ease;
 }
 
@@ -761,768 +832,295 @@ body.dark-mode .theme-toggle-button:hover {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 5. Responsive Design */
-
-/* Tablet & Mobile Styles (max-width: 1024px) */
-@media (max-width: 1024px) {
-    body {
-        align-items: flex-start;
-        padding: 15px;
-    }
-
+@media (min-width: 700px) and (max-width: 1000px) {
     .main-container {
-        padding: 15px;
-        gap: 15px;
-    }
-
-    .sub-container {
+        display: flex;
         flex-direction: column;
-        align-items: center;
+        gap: 20px;    
+        background-color: var(--widget-bg);
+        border-radius: 15px;
+        padding: 20px;
+        width: 90%;
+        min-width: 400px;
+        min-height: 530px;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    .text-input-output {
+        display: flex;
+        flex-direction: column;
         gap: 20px;
+        align-items: center;
     }
-
-    .translator-wrapper {
-        flex: none;
-        width: 100%;
-        max-width: 700px;
-        position: relative;
-        top: 0;
-        height: auto;
+    /* Show the bottom button, hide the between button for ultra-wide desktop */
+    .translate-btn-bottom {
+        display: none;
     }
-
-    /* History Container remains a fixed overlay for all mobile/tablet */
-    .history-container {
-        position: fixed; /* Always fixed on smaller screens */
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        padding: 20px;
-        display: flex; /* Use flex to center the panel */
+    .translate-btn-between {
+        display: flex;
         justify-content: center;
         align-items: center;
-        opacity: 0;
-        pointer-events: none; /* Make it unclickable when hidden */
-        transition: opacity 0.3s ease-in-out;
-    }
-
-    .history-container.show {
-        opacity: 1;
-        pointer-events: auto; /* Make it clickable when shown */
-    }
-
-    .history-panel-inner {
-        max-height: 85vh; /* Adjusted for overall fit */
+       /* margin-top: 32px;
+        margin-bottom: 0; */
         width: 100%;
-        max-width: 500px; /* Limit width of panel within overlay */
-        padding: 20px;
-        position: relative; /* For close button positioning */
-        box-sizing: border-box; /* Ensure padding is included in width/height */
-        transform: scale(0.95);
-    }
-    .history-container.show .history-panel-inner {
-        transform: scale(1);
-    }
+        /* order: 3; */
+    } 
+}
 
-    /* History Close Button (X) */
-    .history-close-button {
-        display: flex; /* Show close button on mobile */
-        /* Position is handled by flexbox within history-header-actions */
-        /* Top/Right absolute positioning removed as it's not needed with flex */
-    }
-
-    .history-header {
-        justify-content: space-between; /* To push title and action buttons apart */
-    }
-
-    .history-header-actions {
-        display: flex; /* Ensure these are flexed */
-        align-items: center;
-        gap: 10px; /* Space between clear all and close buttons */
-    }
-
-
-    .header {
+@media (min-width: 430px) and (max-width: 700px) {
+    .main-container {
+        display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;    
+        background-color: var(--widget-bg);
+        border-radius: 15px;
+        padding: 20px;
+        width: 80%;
+        min-width: 200px;
+        min-height: 400px;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
-
-    .logo-container {
-        justify-content: center;
-        width: 100%;
+    .header h1{
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--header-text);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
     .theme-toggle-button {
-        margin: 0 auto; /* Center theme button below logo */
+        background: var(--secondary-bg);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        padding: 0;
+        border-radius: 50%;
+        color: var(--icon-color);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }    
+    .text-input-output {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
     }
-
+    /* Show the bottom button, hide the between button for ultra-wide desktop */
+    .translate-btn-bottom {
+        display: none;
+    }
+    .translate-btn-between {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    } 
     .language-select {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
+        font-size: 0.95rem;
     }
 
-    .from-lang,
-    .to-lang {
-        flex: none;
+    .from-lang {
+        flex: 1;
+        position: relative;
+        background-color: var(--secondary-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
         width: 100%;
     }
-     .translation-area {
-   display: grid;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "lang"        
-      "input"
-      "translate"
-      "output";
-    gap: 15px;
-    }
-      .language-select           { grid-area: lang; }
-  .input-box                 { grid-area: input; }
-  .translate-button-container{ grid-area: translate;
-                               display: flex; justify-content: center; }
-  .output-box                { grid-area: output; }
 
-.text-input-output {
-       display: contents;                      
+    .to-lang {
+        flex: 1;
+        position: relative;
+        background-color: var(--secondary-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+    }      
 }
 
-  .output-box {
-    margin-bottom: 52px;      
-  }
-
-  
-  .output-buttons-container {
-    position: absolute;      
-    top: 100%;               
-    right: 0;                 
-    transform: translateY(12px);  
-  }
-
-  
-  .output-text-area {
-    padding-bottom: 15px;
-  }
-
-
-    /* output-buttons-container is now always relative to output-box */
-    .output-buttons-container {
-        bottom: 15px;
-        right: 15px;
-        display: flex;
-        gap: 10px;
-    }
-}
-
-/* Small Mobile Devices (480px and below) */
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-
+@media (min-width: 305px) and (max-width: 430px) {
     .main-container {
-        padding: 12px;
-        gap: 12px;
-        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;    
+        background-color: var(--widget-bg);
+        border-radius: 15px;
+        padding: 20px;
+        width: 80%;
+        min-width: 250px;
+        min-height: 400px;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
-    
-    .header{
-      flex-direction: row; /* Keep logo and toggle side-by-side on very small screens */  
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;                     
+    .header h1{
+        margin: 0;
+        font-size: 1rem;
+        color: var(--header-text);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
-    .logo-container {
-        width: auto;
-        justify-content: flex-start;
-        gap: 8px;
+
+    .theme-toggle-button {
+        background: var(--secondary-bg);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        padding: 0;
+        border-radius: 50%;
+        color: var(--icon-color);
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
     .logo {
-        height: 60px;
-        width: 60px;
-    }
-
-    .header h1 {
-        font-size: 1.4em;
-    }
-
-    .header h1 span {
-        font-size: 0.5em;
-    }
-
-    .theme-toggle-button {
-        margin: 0;
-        width: 44px;
-        height: 44px;
-        font-size: 1.4em;
+        width: 50px;
+        height: 50px;
     }
 
     .language-select {
+        flex-direction: column;
         gap: 10px;
+        font-size: 0.8rem;
     }
 
-    .language-select select,
-    .dropdown-selected {
-        font-size: 1em;
-        padding: 10px 12px;
+    .from-lang {
+        flex: 1;
+        position: relative;
+        background-color: var(--secondary-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        width: 100%;
     }
 
-    .from-lang i,
-    .to-lang i {
-        font-size: 1.1em;
-        right: 10px;
+    .to-lang {
+        flex: 1;
+        position: relative;
+        background-color: var(--secondary-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+    }    
+
+    .text-input-output {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+    /* Show the bottom button, hide the between button for ultra-wide desktop */
+    .translate-btn-bottom {
+        display: none;
+    }
+    .translate-btn-between {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.8rem;
+    } 
+}
+
+@media (min-width: 295px) and (max-width: 305px) {
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;    
+        background-color: var(--widget-bg);
+        border-radius: 15px;
+        padding: 20px;
+        width: 100%;
+        min-width: 200px;
+        min-height: 475px;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    .header h1{
+        margin: 0;
+        font-size: 0.7rem;
+        color: var(--header-text);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
-    .input-box,
-    .output-box {
-        height: 160px;
-        min-height: 160px;
-        padding: 12px;
-        gap: 8px;
-        border-radius: 12px;
+    .theme-toggle-button {
+        background: var(--secondary-bg);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        padding: 0;
+        border-radius: 50%;
+        color: var(--icon-color);
+        font-size: 0.7rem;
+        transition: all 0.3s ease;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
-    .label-container {
-        font-size: 0.8em;
-    }
-
-    .input-box textarea,
-    .output-text-area {
-        font-size: 1em;
-    }
-    .output-text-area {
-        padding-bottom: 45px; /* Consistent padding for buttons */
-    }
-
-    .action-button { /* Apply to all action buttons */
-        width: 30px; 
-        height: 30px;
-        font-size: 1.2em;
-    }
-
-    .output-buttons-container {
-        bottom: 12px; 
-        right: 12px;
-        gap: 8px;
-    }
-
-    .char-count {
-        font-size: 0.8em;
-    }
-
-    .translate-button {
-        padding: 10px 22px;
-        font-size: 1em;
-    }
-
-    .history-panel-inner {
-        padding: 15px;
-    }
-
-    .history-close-button {
-        font-size: 1.2em; /* Smaller close button for small phones */
+    .logo {
         width: 30px;
         height: 30px;
     }
 
-    .history-header h2 {
-        font-size: 1.1em;
-    }
-
-    .clear-history-button {
-        padding: 6px 10px;
-        font-size: 0.8em;
-    }
-
-    .history-item {
-        padding: 12px;
-        margin-bottom: 8px;
-    }
-
-    .history-source {
-        font-size: 0.9em;
-    }
-
-    .translation-item {
-        font-size: 0.9em;
-    }
-
-    .delete-history-item {
-        font-size: 1.1em;
-        width: 22px;
-        height: 22px;
-        top: 8px;
-        right: 8px;
-    }
-}
-
-/* Extra Small Mobile Devices (360px and below) */
-@media (max-width: 360px) {
-    body {
-        padding: 8px;
-    }
-
-    .main-container {
-        padding: 10px;
+    .language-select {
+        flex-direction: column;
         gap: 10px;
-        border-radius: 10px;
+        font-size: 0.5rem;
     }
 
-    .logo {
-        height: 60px;
-        width: 60px;
-    }
-
-    .logo-container {
-        gap: 6px;
-    }
-
-    .header {
-        gap: 6px;
-    }
-
-    .header h1 {
-        font-size: 1.1em;
-    }
-
-    .header h1 span {
-        font-size: 0.4em;
-    }
-
-    .theme-toggle-button {
-        width: 36px;
-        height: 36px;
-        font-size: 1.2em;
-    }
-
-    .language-select {
-        gap: 8px;
-    }
-
-    .language-select select,
-    .dropdown-selected {
-        font-size: 0.9em;
-        padding: 8px 10px;
-    }
-
-    .from-lang i,
-    .to-lang i {
-        font-size: 0.9em;
-        right: 8px;
-    }
-
-    .input-box,
-    .output-box {
-        height: 140px;
-        min-height: 140px;
-        padding: 10px;
-        gap: 6px;
-        border-radius: 10px;
-    }
-
-    .label-container {
-        font-size: 0.75em;
-    }
-
-    .input-box textarea,
-    .output-text-area {
-        font-size: 0.9em;
-        line-height: 1.4;
-    }
-
-    .output-text-area {
-        padding-bottom: 40px; /* Keep space for buttons */
-    }
-
-    .action-button {
-        width: 28px; 
-        height: 28px;
-        font-size: 1em;
-    }
-
-    .output-buttons-container {
-        bottom: 10px; 
-        right: 10px;
-        gap: 6px;
-    }
-
-    .char-count {
-        font-size: 0.75em;
-    }
-
-    .translate-button {
-        padding: 8px 18px;
-        font-size: 0.9em;
-        border-radius: 8px;
-    }
-
-    .translate-button-container {
-        margin-top: 10px;
-    }
-
-    .history-panel-inner {
-        padding: 12px;
-        max-height: 80vh;
-        max-width: calc(100vw - 20px);
-    }
-
-    .history-close-button {
-        font-size: 1em; /* Further reduce close button for tiny phones */
-        width: 28px;
-        height: 28px;
-    }
-
-    .history-header h2 {
-        font-size: 1em;
-    }
-
-    .clear-history-button {
-        padding: 5px 10px;
-        font-size: 0.8em;
-    }
-
-    .history-item {
-        padding: 10px;
-        margin-bottom: 6px;
-    }
-
-    .history-source {
-        font-size: 0.85em;
-    }
-
-    .translation-item {
-        font-size: 0.85em;
-        padding-left: 8px;
-    }
-
-    .delete-history-item {
-        font-size: 1em;
-        width: 20px;
-        height: 20px;
-        top: 6px;
-        right: 6px;
-    }
-    .dropdown-options {
-        max-height: 120px;
-    }
-}
-
-/* Ultra Small Mobile Devices (320px and below) */
-@media (max-width: 320px) {
-    body {
-        padding: 5px;
-    }
-
-    .main-container {
-        padding: 8px;
-        gap: 8px;
-        border-radius: 8px;
-    }
-
-    .logo {
-        height: 50px;
-        width: 50px;
-    }
-
-    .logo-container {
-        gap: 6px;
-    }
-
-    .header {
-        gap: 6px;
-    }
-
-    .header h1 {
-        font-size: 1.1em;
-        letter-spacing: 0.02em;
-    }
-
-    .header h1 span {
-        font-size: 0.4em;
-        margin-top: 1px;
-    }
-
-    .theme-toggle-button {
-        width: 36px;
-        height: 36px;
-        font-size: 1.2em;
-    }
-
-    .language-select {
-        gap: 6px;
-    }
-
-    .language-select select,
-    .dropdown-selected {
-        font-size: 0.85em;
-        padding: 6px 8px;
-    }
-
-    .from-lang i,
-    .to-lang i {
-        font-size: 0.8em;
-        right: 6px;
-    }
-
-    .input-box,
-    .output-box {
-        height: 120px;
-        min-height: 120px;
-        padding: 8px;
-        gap: 4px;
-        border-radius: 8px;
-    }
-
-    .label-container {
-        font-size: 0.7em;
-    }
-
-    .input-box textarea,
-    .output-text-area {
-        font-size: 0.85em;
-        line-height: 1.3;
-    }
-
-    .output-text-area {
-        padding-bottom: 35px; /* Adjust padding for smaller buttons */
-    }
-
-    .action-button {
-        width: 20px;
-        height: 20px;
-        font-size: 1em;
-    }
-
-    .output-buttons-container {
-        bottom: 8px;
-        right: 8px;
-        gap: 6px;
-    }
-
-    .char-count {
-        font-size: 0.7em;
-    }
-
-    .translate-button {
-        padding: 6px 15px;
-        font-size: 0.85em;
-        border-radius: 6px;
-    }
-
-    .translate-button-container {
-        margin-top: 8px;
-    }
-
-    .history-panel-inner {
-        padding: 12px;
-        max-height: 75vh;
-        max-width: calc(100vw - 16px);
-    }
-
-    .history-close-button {
-        font-size: 1em;
-        width: 28px;
-        height: 28px;
-    }
-
-    .history-header h2 {
-        font-size: 0.9em;
-    }
-
-    .clear-history-button {
-        padding: 3px 6px;
-        font-size: 0.7em;
-    }
-
-    .history-item {
-        padding: 8px;
-        margin-bottom: 4px;
-    }
-
-    .history-source {
-        font-size: 0.8em;
-    }
-
-    .translation-item {
-        font-size: 0.8em;
-        padding-left: 6px;
-    }
-
-    .delete-history-item {
-        font-size: 0.8em;
-        width: 16px;
-        height: 16px;
-        top: 4px;
-        right: 4px;
-    }
-
-    .dropdown-options {
-        max-height: 120px;
-    }
-
-    .dropdown-option {
-        padding: 8px 10px;
-        font-size: 0.85em;
-    }
-
-    .no-history {
-        padding: 10px 0;
-        font-size: 0.8em;
-    }
-}
-
-
-/* Landscape orientation adjustments for small screens (re-evaluated) */
-@media (max-width: 640px) and (orientation: landscape) {
-    .main-container {
-        flex-direction: row;
-        max-width: 90%;
-        padding: 15px;
-        gap: 15px;
-    }
-    .sub-container {
-        flex-direction: row;
-        gap: 15px;
-    }
-    .translator-wrapper {
-        width: auto;
-        max-width: none;
+    .from-lang {
         flex: 1;
-        gap: 10px;
+        position: relative;
+        background-color: var(--secondary-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        width: 100%;
     }
-    .history-container {
-        /* Keep as fixed overlay in landscape */
-        position: fixed; 
-        top: 0; bottom: 0; left: 0; right: 0;
-        padding: 10px;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(0,0,0,0.6);
-        z-index: 1000;
-        display: none;
-        opacity: 0;
-        pointer-events: none;
-    }
-    .history-container.show {
-        display: flex;
-        opacity: 1;
-        pointer-events: auto;
-    }
-    .history-panel-inner {
-        width: 80vw;
-        max-width: 500px;
-        height: auto;
-        max-height: 85vh;
-        padding: 15px;
-        border-radius: 15px;
-    }
+
+    .to-lang {
+        flex: 1;
+        position: relative;
+        background-color: var(--secondary-bg);
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+    }    
+
     .text-input-output {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
     }
-    .input-box,
-    .output-box {
-        height: 120px;
-        min-height: 120px;
-        padding: 10px;
-        gap: 6px;
+    
+     .translate-btn-bottom {
+        display: none;
     }
-    .output-text-area {
-        top: 35px;
-        padding-bottom: 35px;
-    }
-    .action-button {
-        width: 28px; height: 28px; font-size: 1.1em;
-    }
-    .output-buttons-container {
-        bottom: 8px; right: 8px; gap: 6px;
-    }
-    .language-select {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    .from-lang, .to-lang {
-        flex: 1;
-        min-width: 120px;
-    }
-    /* Re-enable swap button for landscape if desired, otherwise it remains hidden */
-    .swap-button {
-        display: none; /* Keep hidden, or set to 'block' if desired */
-        transform: rotate(0deg); 
-        margin: 0 5px;
-        width: 40px; height: 40px;
-    }
-    .translate-button {
-        padding: 8px 20px;
-        font-size: 0.9em;
-    }
-    .header {
-        flex-direction: row;
-        gap: 10px;
-    }
-}
-
-/* Very short screens (height-based media queries) */
-@media (max-height: 600px){
-  .dropdown-options{
-      max-height: 120px;             
-  }
-
-  .input-box,
-  .output-box{
-      height: 100px;
-      min-height: 100px;
-  }
-  .history-panel-inner{
-      max-height: 80vh;
-  }
-}
-
-@media (max-height: 500px){
-    .input-box,
-    .output-box {
-        height: 80px;
-        min-height: 80px;
-        padding: 8px;
-    }
-    .output-text-area {
-        top: 25px;
-        padding-bottom: 30px;
-    }
-    .history-panel-inner {
-        max-height: 70vh;
-        padding: 10px;
-    }
-    .header h1 {
-        font-size: 1em;
-    }
-    .language-select select, .dropdown-selected {
-        padding: 5px 8px;
-        font-size: 0.8em;
-    }
-    .translate-button {
-        padding: 6px 15px;
-        font-size: 0.8em;
-    }
-}
-@media (min-width: 1025px) {
-
-.output-box{
-    margin-bottom: 50px;          
-  }
-
-  
-  .output-buttons-container{
-    position: absolute;          
-    top: 100%;                    
-    transform: translateY(20px);  
-  }
-
-  .output-text-area{
-    padding-bottom: 15px;       
-  }
+    .translate-btn-between {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.5rem;
+    } 
 }
