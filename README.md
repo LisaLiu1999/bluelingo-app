@@ -199,3 +199,5 @@ bluelingo-app/
 - Node-fetch. (n.d.). node-fetch - A light-weight module that brings window.fetch to Node.js. https://github.com/node-fetch/node-fetch
 - CORS. (n.d.). cors - Node.js CORS middleware. https://github.com/expressjs/cors
 - Body-Parser. (n.d.). body-parser - Node.js body parsing middleware. https://github.com/expressjs/body-parser
+- Google. (n.d.). Lighthouse. https://developer.chrome.com/docs/lighthouse/
+- Apache Software Foundation. (n.d.). Apache JMeter. https://jmeter.apache.org/
